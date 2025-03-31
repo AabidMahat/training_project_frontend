@@ -1,0 +1,97 @@
+<div class="register-container">
+  <h2>Registration Form</h2>
+  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+    <!-- Name -->
+    <div class="form-group">
+      <label for="name">Full Name</label>
+      <input
+        type="text"
+        id="name"
+        formControlName="name"
+        placeholder="Enter your full name"
+      />
+      <small
+        *ngIf="
+          registrationForm.get('name')?.touched &&
+          registrationForm.get('name')?.invalid
+        "
+      >
+        Name is required.
+      </small>
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        formControlName="email"
+        placeholder="Enter your email"
+      />
+      <small
+        *ngIf="
+          registrationForm.get('email')?.touched &&
+          registrationForm.get('email')?.invalid
+        "
+      >
+        Enter a valid email.
+      </small>
+    </div>
+
+    <!-- Password -->
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        placeholder="Enter your password"
+      />
+      <small
+        *ngIf="
+          registrationForm.get('password')?.touched &&
+          registrationForm.get('password')?.invalid
+        "
+      >
+        Password must be at least 6 characters.
+      </small>
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password</label>
+      <input
+        type="password"
+        id="confirmPassword"
+        formControlName="confirmPassword"
+        placeholder="Confirm your password"
+      />
+      <small *ngIf="registrationForm.hasError('passwordMismatch')">
+        Passwords do not match.
+      </small>
+    </div>
+
+    <!-- Role -->
+    <div class="form-group">
+      <label for="role">Role</label>
+      <select id="role" formControlName="role">
+        <option value="" disabled>Select your role</option>
+        <option value="viewer">Viewer</option>
+        <option value="editor">Editor</option>
+      </select>
+      <small
+        *ngIf="
+          registrationForm.get('role')?.touched &&
+          registrationForm.get('role')?.invalid
+        "
+      >
+        Please select a role.
+      </small>
+    </div>
+
+    <button type="submit" [disabled]="registrationForm.invalid">
+      Register
+    </button>
+  </form>
+</div>

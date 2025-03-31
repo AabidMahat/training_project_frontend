@@ -1,0 +1,301 @@
+// Modern variables
+$primary-color: #4f46e5;
+$secondary-color: #818cf8;
+$light-bg: #f9fafb;
+$dark-text: #1f2937;
+$light-text: #6b7280;
+$border-radius: 10px;
+$card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+$transition: all 0.2s ease;
+
+.dashboard-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    .header-left {
+      .title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: $dark-text;
+        margin: 0;
+      }
+
+      .subtitle {
+        font-size: 0.95rem;
+        color: $light-text;
+        margin: 0.5rem 0 0;
+      }
+    }
+
+    .create-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: $primary-color;
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1.25rem;
+      border: none;
+      border-radius: $border-radius;
+      cursor: pointer;
+      transition: $transition;
+
+      &:hover {
+        background-color: darken($primary-color, 10%);
+        transform: translateY(-2px);
+      }
+
+      .icon {
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .workspace-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+
+    .workspace-card {
+      background-color: white;
+      border-radius: $border-radius;
+      overflow: hidden;
+      box-shadow: $card-shadow;
+      transition: $transition;
+      cursor: pointer;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header {
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: $secondary-color;
+
+        .workspace-icon {
+          width: 60px;
+          height: 60px;
+          background-color: rgba(255, 255, 255, 0.2);
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .folder-icon {
+            display: inline-block;
+            width: 34px;
+            height: 34px;
+            background-color: white;
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z' /%3E%3C/svg%3E");
+            mask-repeat: no-repeat;
+            mask-position: center;
+          }
+        }
+      }
+
+      .card-body {
+        padding: 1.25rem;
+
+        .workspace-name {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: $dark-text;
+          margin: 0 0 0.75rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .workspace-meta {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 0.85rem;
+          color: $light-text;
+
+          .active-users {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            .user-icon {
+              display: inline-block;
+              width: 14px;
+              height: 14px;
+              background-color: $light-text;
+              mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z' /%3E%3C/svg%3E");
+              mask-repeat: no-repeat;
+              mask-position: center;
+            }
+          }
+
+          .document-count {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            .document-icon {
+              display: inline-block;
+              width: 14px;
+              height: 14px;
+              background-color: $light-text;
+              mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' /%3E%3C/svg%3E");
+              mask-repeat: no-repeat;
+              mask-position: center;
+            }
+          }
+        }
+      }
+
+      .card-footer {
+        padding: 1rem 1.25rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .member-indicators {
+          .member-count {
+            font-size: 0.85rem;
+            color: $light-text;
+            display: flex;
+            align-items: center;
+          }
+        }
+
+        .view-btn {
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: $primary-color;
+          display: flex;
+          align-items: center;
+
+          &::after {
+            content: "";
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            margin-left: 4px;
+            background-color: $primary-color;
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 5l7 7-7 7' /%3E%3C/svg%3E");
+            mask-repeat: no-repeat;
+            mask-position: center;
+          }
+        }
+      }
+    }
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1rem;
+    text-align: center;
+
+    .empty-illustration {
+      width: 120px;
+      height: 120px;
+      background-color: $light-bg;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+
+      .folder-icon {
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        background-color: $light-text;
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z' /%3E%3C/svg%3E");
+        mask-repeat: no-repeat;
+        mask-position: center;
+      }
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: $dark-text;
+      margin: 0 0 0.75rem;
+    }
+
+    p {
+      font-size: 1rem;
+      color: $light-text;
+      max-width: 400px;
+      margin: 0 0 2rem;
+    }
+
+    .create-btn-large {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: $primary-color;
+      color: white;
+      font-weight: 600;
+      padding: 0.875rem 1.5rem;
+      border: none;
+      border-radius: $border-radius;
+      cursor: pointer;
+      transition: $transition;
+
+      &:hover {
+        background-color: darken($primary-color, 10%);
+        transform: translateY(-2px);
+      }
+
+      .icon {
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 1.5rem;
+
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+
+      .create-btn {
+        align-self: flex-start;
+      }
+    }
+
+    .workspace-grid {
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 1rem;
+
+    .workspace-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}

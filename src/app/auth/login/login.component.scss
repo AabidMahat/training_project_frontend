@@ -1,0 +1,105 @@
+.register-container {
+  max-width: 450px;
+  margin: 80px auto;
+  padding: 45px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease;
+
+  h2 {
+    font-size: 30px;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 30px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+
+  .form-group {
+    text-align: left;
+    margin-bottom: 22px;
+    position: relative;
+    padding: 0 8px;
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #222;
+      font-size: 15px;
+    }
+
+    input,
+    select {
+      width: 93%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 5px rgba(49, 129, 234);
+      transition: all 0.3s ease;
+      outline: none;
+      display: block;
+      font-weight: 500;
+      color: #222;
+
+      &:focus {
+        background: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 0 5px rgba(11, 22, 145);
+        transform: scale(1.03);
+      }
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='20' height='20' fill='black'><path d='M7 10l5 5 5-5z'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 20px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    small {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+      display: block;
+      padding-left: 5px;
+    }
+  }
+
+  button {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #ff7eb3, #ff4d4d);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 18px rgba(255, 78, 80, 0.4);
+    margin-top: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    &:hover {
+      background: linear-gradient(135deg, #ff4d4d, #ff1a1a);
+      box-shadow: 0 8px 22px rgba(255, 78, 80, 0.6);
+      transform: scale(1.01);
+    }
+
+    &:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+  }
+}

@@ -1,0 +1,54 @@
+<!-- dashboard.component.html -->
+<div class="dashboard-container">
+  <!-- Header (Grid Area 1) -->
+  <header class="dashboard-header">
+    <h1 class="workspace-title">{{ workspaceName }}</h1>
+    <button class="join-btn" (click)="joinWorkspace()">Join Workspace</button>
+  </header>
+
+  <!-- Main Content with Document Cards (Grid Area 2) -->
+  <main class="main-content">
+    <h2>Documents</h2>
+    <div class="document-grid">
+      <div
+        *ngFor="let doc of documents"
+        class="document-card"
+        (click)="selectDocument(doc)"
+      >
+        <h3 class="document-title">{{ doc.title }}</h3>
+        <p class="document-description">{{ doc.description }}</p>
+      </div>
+    </div>
+
+    <!-- Document Detail View (moved from bottom grid area to main content) -->
+    <section class="document-detail" *ngIf="selectedDocument">
+      <h2>{{ selectedDocument.title }}</h2>
+      <p>{{ selectedDocument.content }}</p>
+    </section>
+
+    <!-- Placeholder when no document is selected -->
+    <section class="document-detail placeholder" *ngIf="!selectedDocument">
+      <p>Select a document to view its contents</p>
+    </section>
+  </main>
+
+  <!-- Sidebar with Active Users (Grid Area 3) - On the right -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>Active Users</h2>
+    </div>
+    <ul class="user-list">
+      <li
+        *ngFor="let user of activeUsers"
+        class="user-item"
+        [class.active]="user.isActive"
+      >
+        <div class="user-avatar">
+          <img [src]="user.avatar" alt="{{ user.name }}'s avatar" />
+          <span class="status-indicator" [class.online]="user.isActive"></span>
+        </div>
+        <span class="user-name">{{ user.name }}</span>
+      </li>
+    </ul>
+  </aside>
+</div>

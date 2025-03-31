@@ -1,0 +1,62 @@
+<div class="create-workspace-overlay" [class.visible]="isFormVisible">
+  <div class="create-workspace-modal">
+    <div class="modal-header">
+      <h2>Create New Workspace</h2>
+      <button class="close-btn" (click)="hideForm()">
+        <i class="close-icon"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <form [formGroup]="createWorkspaceForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="workspace-name">Workspace Name</label>
+          <input
+            type="text"
+            id="workspace-name"
+            formControlName="name"
+            placeholder="Enter workspace name"
+            autofocus
+          />
+          <div
+            class="error-message"
+            *ngIf="name.invalid && (name.dirty || name.touched)"
+          >
+            <span *ngIf="name.errors?.['required']"
+              >Workspace name is required</span
+            >
+            <span *ngIf="name.errors?.['minlength']"
+              >Name must be at least 3 characters</span
+            >
+          </div>
+        </div>
+
+        <div class="workspace-preview" *ngIf="name.value">
+          <div
+            class="preview-header"
+            [ngStyle]="{ 'background-color': previewColor }"
+          >
+            <div class="workspace-icon">
+              <i class="folder-icon"></i>
+            </div>
+          </div>
+          <div class="preview-name">{{ name.value || "New Workspace" }}</div>
+          <div class="preview-label">Preview</div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="hideForm()">
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="create-btn"
+            [disabled]="createWorkspaceForm.invalid"
+          >
+            Create Workspace
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
