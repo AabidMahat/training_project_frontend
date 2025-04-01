@@ -1,0 +1,75 @@
+.join-workspace-form {
+  max-width: 480px; /* Increased width slightly for breathing space */
+  margin: 50px auto;
+  padding: 30px; /* Increased padding for a spacious layout */
+  background: #ffffff;
+  border-radius: 12px; /* Softer corners */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    font-size: 26px; /* Slightly larger font */
+    text-align: center;
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 30px; /* Extra space below heading */
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Slightly increased gap between label and input */
+    margin-bottom: 25px; /* Extra spacing between form groups */
+
+    label {
+      font-size: 15px; /* Slightly larger font for readability */
+      font-weight: 600;
+      color: #555;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 14px 16px; /* Increased padding for inputs */
+      font-size: 15px; /* Consistent font size for inputs */
+      border: 1px solid #ccc;
+      border-radius: 6px; /* Softer corners */
+      background-color: #fff;
+      outline: none;
+      transition: all 0.3s ease;
+
+      &:focus {
+        border-color: #0056b3;
+        box-shadow: 0 0 8px rgba(0, 86, 179, 0.3);
+      }
+
+      &[readonly] {
+        background-color: #f8f8f8;
+        color: #888;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  button {
+    width: 100%;
+    padding: 14px; /* Taller button */
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, #0056b3, #003d80);
+      transform: translateY(-2px); /* Slight lift effect */
+    }
+
+    &:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+  }
+}

@@ -3,7 +3,13 @@
   <!-- Header (Grid Area 1) -->
   <header class="dashboard-header">
     <h1 class="workspace-title">{{ workspaceName }}</h1>
-    <button class="join-btn" (click)="joinWorkspace()">Join Workspace</button>
+
+    <button
+      class="join-btn"
+      (click)="isUserPresent() ? addDocument() : joinWorkspace()"
+    >
+      {{ isUserPresent() ? "Add Doucment" : "Join Workspace" }}
+    </button>
   </header>
 
   <!-- Main Content with Document Cards (Grid Area 2) -->
@@ -16,7 +22,13 @@
         (click)="selectDocument(doc)"
       >
         <h3 class="document-title">{{ doc.title }}</h3>
-        <p class="document-description">{{ doc.description }}</p>
+        <p class="document-description">{{ doc.content }}</p>
+        <p class="document-description">
+          Created At :- {{ doc.createdAt | date }}
+        </p>
+        <p class="document-description">
+          Updated At :- {{ doc.updatedAt | date }}
+        </p>
       </div>
     </div>
 
@@ -38,16 +50,15 @@
       <h2>Active Users</h2>
     </div>
     <ul class="user-list">
-      <li
-        *ngFor="let user of activeUsers"
-        class="user-item"
-        [class.active]="user.isActive"
-      >
+      <li *ngFor="let user of activeUsers" class="user-item {{ user.role }}">
         <div class="user-avatar">
-          <img [src]="user.avatar" alt="{{ user.name }}'s avatar" />
-          <span class="status-indicator" [class.online]="user.isActive"></span>
+          {{ user.name.slice(0, 2) }}
         </div>
-        <span class="user-name">{{ user.name }}</span>
+        <div class="user-details">
+          <span class="user-name">{{ user.name }}</span>
+          <span class="user-email">{{ user.email }}</span>
+          <span class="user-role">{{ user.role }}</span>
+        </div>
       </li>
     </ul>
   </aside>

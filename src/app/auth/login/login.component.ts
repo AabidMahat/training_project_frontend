@@ -46,6 +46,8 @@ export class LoginComponent {
           console.log('Loggin Successful:', data);
           console.log(this.token);
 
+          
+
           this.cookieService.set('jwt', this.token, 7);
         },
         error: (err) => {

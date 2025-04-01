@@ -1,0 +1,37 @@
+<div class="join-workspace-form">
+  <h2>Join Workspace</h2>
+  <form [formGroup]="joinWorkspaceForm" (ngSubmit)="onSubmit()">
+    <!-- Workspace Name -->
+    <div class="form-group">
+      <label for="workspaceName">Workspace Name</label>
+      <input
+        type="text"
+        id="workspaceName"
+        formControlName="workspaceName"
+        readonly
+        placeholder="Enter workspace name"
+      />
+    </div>
+
+    <!-- Request Type -->
+    <div class="form-group">
+      <label for="requestType">Request Type</label>
+      <select id="requestType" formControlName="requestType">
+        <option value="join">Join</option>
+        <option value="edit">Edit</option>
+      </select>
+    </div>
+
+    <!-- Requested Role -->
+    <div class="form-group">
+      <label for="requestedRole">Requested Role</label>
+      <select id="requestedRole" formControlName="requestedRole">
+        <option value="viewer">Viewer</option>
+        <option value="editor">Editor</option>
+      </select>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit">Submit</button>
+  </form>
+</div>

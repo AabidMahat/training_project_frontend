@@ -118,10 +118,11 @@ $transition-standard: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       box-shadow: $shadow-light;
       padding: 14px;
       display: flex;
-      align-items: center;
-      cursor: pointer;
+      flex-direction: column;
+      gap: 6px;
       transition: $transition-standard;
       border: 1px solid $border-color;
+      cursor: pointer;
 
       &:hover {
         transform: translateY(-2px);
@@ -129,46 +130,39 @@ $transition-standard: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         border-color: rgba($accent-color, 0.3);
       }
 
-      &.active {
-        border-left: 3px solid $success-color;
-        background-color: rgba($success-color, 0.03);
+      &.editor {
+        background-color: rgba(0, 123, 255, 0.1); /* Light blue for editors */
+        border-left: 4px solid #007bff; /* Accent blue border */
       }
 
-      .user-avatar {
-        position: relative;
-        margin-right: 14px;
-
-        img {
-          width: 42px;
-          height: 42px;
-          border-radius: 50%;
-          object-fit: cover;
-          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-          border: 2px solid $background-white;
-        }
-
-        .status-indicator {
-          position: absolute;
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background-color: #bdc3c7;
-          border: 2px solid $background-white;
-          bottom: 0;
-          right: 0;
-          transition: $transition-standard;
-
-          &.online {
-            background-color: $success-color;
-          }
-        }
+      &.viewer {
+        background-color: rgba(255, 193, 7, 0.1); /* Light yellow for viewers */
+        border-left: 4px solid #ffc107; /* Accent yellow border */
       }
+    }
 
-      .user-name {
-        font-size: 14px;
-        font-weight: 500;
-        color: $text-primary;
-      }
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: $text-primary;
+    }
+
+    .user-email {
+      font-size: 12px;
+      color: $text-secondary;
+    }
+
+    .user-role {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: capitalize;
+      color: $text-secondary;
     }
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WorkspaceService } from '../workspace.service';
 import { catchError, map, throwError } from 'rxjs';
 import { Workspace } from '../workspace.modal';
@@ -12,7 +12,8 @@ import { Workspace } from '../workspace.modal';
 export class WorkspaceComponent implements OnInit {
   constructor(
     private router: Router,
-    private workspaceService: WorkspaceService
+    private workspaceService: WorkspaceService,
+    private activateRoute: ActivatedRoute
   ) {}
 
   workspaces: Workspace[] = [];
@@ -47,25 +48,19 @@ export class WorkspaceComponent implements OnInit {
       });
   }
 
-  // Navigate to workspace detail page
   goToWorkspaceDetail(workspaceId: string): void {
     this.router.navigate(['/workspace', workspaceId]);
   }
 
-  // Generate a consistent color for each workspace
   getWorkspaceColor(id: string): string {
-    // Generate a consistent index based on the id
     const index =
       id.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) %
       this.colorPalette.length;
     return this.colorPalette[index];
   }
 
-  // Create a new workspace
   createWorkspace(): void {
-    // Implement workspace creation logic
     console.log('Create workspace clicked');
-    // This would typically open a modal or navigate to a creation page
   }
 
   onCreateWorkspace() {
@@ -81,6 +76,8 @@ export class WorkspaceComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
+          console.log(data);
+          this.workspaceService.workspaceSubject.next(data);
           this.router.navigate(['/workspace', workspaceId]);
         },
         error: (err) => console.log(err),
