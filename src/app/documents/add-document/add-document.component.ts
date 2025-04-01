@@ -41,11 +41,15 @@ export class AddDocumentComponent {
       return;
     }
 
+    const formData = new FormData();
+    formData.append('title', this.addDocumentForm.value.title!);
+    formData.append('content', this.addDocumentForm.value.content!);
+    formData.append('file', this.selectedFile!);
+
+    console.log(this.selectedFile);
+
     this.documentService
-      .addDocumentToWorkspace(workspaceId!, {
-        ...this.addDocumentForm.value,
-        document: this.selectedFile,
-      })
+      .addDocumentToWorkspace(workspaceId!, formData!)
       .subscribe({
         next: (data) => {
           this.toastr.success('Document Added');

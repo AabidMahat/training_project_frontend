@@ -18,7 +18,7 @@ export class DocumentService {
   private APIURL = 'http://localhost:3000/api/v1';
   constructor(private httpClient: HttpClient) {}
 
-  addDocumentToWorkspace(workspaceId: string, data: Partial<Document>) {
+  addDocumentToWorkspace(workspaceId: string, data: FormData) {
     return this.httpClient.patch(
       `${this.APIURL}/document/addDocument/${workspaceId}`,
       data

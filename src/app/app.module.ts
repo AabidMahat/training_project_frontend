@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CookieService } from 'ngx-cookie-service';
+
+import { QuillModule } from 'ngx-quill';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -40,6 +42,8 @@ import { AddDocumentComponent } from './documents/add-document/add-document.comp
     ReactiveFormsModule,
     HttpClientModule,
     ToastrModule.forRoot(),
+    FormsModule,
+    QuillModule.forRoot(),
   ],
   providers: [
     CookieService,

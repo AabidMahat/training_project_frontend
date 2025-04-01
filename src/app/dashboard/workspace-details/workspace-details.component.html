@@ -35,7 +35,8 @@
     <!-- Document Detail View (moved from bottom grid area to main content) -->
     <section class="document-detail" *ngIf="selectedDocument">
       <h2>{{ selectedDocument.title }}</h2>
-      <p>{{ selectedDocument.content }}</p>
+      <!-- <p>{{ selectedDocument.content }}</p> -->
+      <quill-editor [(ngModel)]="selectedDocument.content"></quill-editor>
     </section>
 
     <!-- Placeholder when no document is selected -->

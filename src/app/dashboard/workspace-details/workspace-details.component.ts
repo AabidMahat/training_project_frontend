@@ -85,6 +85,6 @@ export class DashboardDetailComponent implements OnInit {
   }
 
   selectDocument(document: Document): void {
-    this.selectedDocument = document;
+    this.selectedDocument = { ...document };
   }
 }
