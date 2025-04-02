@@ -1,105 +1,326 @@
-.register-container {
-  max-width: 450px;
-  margin: 80px auto;
-  padding: 45px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+/* login.component.scss */
+// Variables
+$primary-color: #4f46e5;
+$primary-hover: #4338ca;
+$secondary-color: #6b7280;
+$text-color: #1f2937;
+$light-text: #6b7280;
+$error-color: #ef4444;
+$border-color: #e5e7eb;
+$input-bg: #f9fafb;
+$white: #ffffff;
+$box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+  0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$border-radius: 8px;
+$transition: all 0.3s ease;
+
+// Container and card
+.container {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.login-card {
+  background-color: $white;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  padding: 32px;
+  width: 100%;
+}
+
+// Header
+.login-header {
+  margin-bottom: 24px;
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: transform 0.3s ease;
 
   h2 {
-    font-size: 30px;
-    font-weight: bold;
-    color: #222;
-    margin-bottom: 30px;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
+    color: $text-color;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
   }
 
-  .form-group {
-    text-align: left;
-    margin-bottom: 22px;
-    position: relative;
-    padding: 0 8px;
-
-    label {
-      display: block;
-      font-weight: 700;
-      margin-bottom: 8px;
-      color: #222;
-      font-size: 15px;
-    }
-
-    input,
-    select {
-      width: 93%;
-      padding: 16px;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      background: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 0 5px rgba(49, 129, 234);
-      transition: all 0.3s ease;
-      outline: none;
-      display: block;
-      font-weight: 500;
-      color: #222;
-
-      &:focus {
-        background: rgba(255, 255, 255, 0.5);
-        box-shadow: 0 0 5px rgba(11, 22, 145);
-        transform: scale(1.03);
-      }
-    }
-
-    select {
-      appearance: none;
-      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='20' height='20' fill='black'><path d='M7 10l5 5 5-5z'/></svg>");
-      background-repeat: no-repeat;
-      background-position: right 16px center;
-      background-size: 20px;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    small {
-      color: red;
-      font-size: 12px;
-      margin-top: 5px;
-      display: block;
-      padding-left: 5px;
-    }
+  p {
+    color: $light-text;
+    font-size: 14px;
   }
+}
 
-  button {
-    width: 100%;
-    padding: 16px;
-    border: none;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: bold;
-    background: linear-gradient(135deg, #ff7eb3, #ff4d4d);
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 18px rgba(255, 78, 80, 0.4);
-    margin-top: 15px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+// Form groups
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: $text-color;
+  }
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+
+  .forgot-password {
+    font-size: 12px;
+    color: $primary-color;
+    text-decoration: none;
 
     &:hover {
-      background: linear-gradient(135deg, #ff4d4d, #ff1a1a);
-      box-shadow: 0 8px 22px rgba(255, 78, 80, 0.6);
-      transform: scale(1.01);
+      text-decoration: underline;
+    }
+  }
+}
+
+// Input fields
+.input-with-icon {
+  position: relative;
+
+  i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $secondary-color;
+    font-size: 16px;
+  }
+
+  input {
+    width: 85%;
+    padding: 12px 12px 12px 40px;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    background-color: $input-bg;
+    font-size: 14px;
+    transition: $transition;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
     }
 
-    &:disabled {
-      background: #aaa;
-      cursor: not-allowed;
-      box-shadow: none;
+    &::placeholder {
+      color: #a1a1aa;
+    }
+  }
+
+  .toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: $secondary-color;
+    cursor: pointer;
+
+    &:hover {
+      color: $text-color;
+    }
+  }
+}
+
+// Validation error messages
+.error-message {
+  display: flex;
+  align-items: center;
+  color: $error-color;
+  font-size: 12px;
+  margin-top: 6px;
+
+  i {
+    margin-right: 4px;
+  }
+}
+
+// Remember me checkbox
+.remember-me {
+  margin-bottom: 20px;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+  font-size: 14px;
+  color: $light-text;
+  user-select: none;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+
+    &:checked ~ .checkmark {
+      background-color: $primary-color;
+      border-color: $primary-color;
+
+      &:after {
+        display: block;
+      }
+    }
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 18px;
+    width: 18px;
+    background-color: $white;
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    transition: $transition;
+
+    &:after {
+      content: "";
+      position: absolute;
+      display: none;
+      left: 6px;
+      top: 3px;
+      width: 4px;
+      height: 8px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+  }
+
+  &:hover input ~ .checkmark {
+    border-color: $primary-color;
+  }
+}
+
+// Login button
+.login-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px;
+  background-color: $primary-color;
+  color: $white;
+  border: none;
+  border-radius: $border-radius;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition;
+
+  i {
+    margin-left: 8px;
+    transition: $transition;
+  }
+
+  &:hover {
+    background-color: $primary-hover;
+
+    i {
+      transform: translateX(4px);
+    }
+  }
+
+  &:disabled {
+    background-color: #a1a1aa;
+    cursor: not-allowed;
+
+    &:hover i {
       transform: none;
     }
+  }
+}
+
+// Divider
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 24px 0;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid $border-color;
+  }
+
+  span {
+    padding: 0 16px;
+    color: $light-text;
+    font-size: 14px;
+  }
+}
+
+// Social login button
+.social-login {
+  margin-bottom: 20px;
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 12px;
+    background-color: $white;
+    color: $text-color;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: $transition;
+
+    i {
+      margin-right: 8px;
+      font-size: 16px;
+      color: #ea4335;
+    }
+
+    &:hover {
+      background-color: #f9fafb;
+    }
+  }
+}
+
+// Sign up link
+.signup-link {
+  text-align: center;
+  font-size: 14px;
+  color: $light-text;
+
+  a {
+    color: $primary-color;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 480px) {
+  .login-card {
+    padding: 24px;
+  }
+
+  .login-header h2 {
+    font-size: 20px;
   }
 }

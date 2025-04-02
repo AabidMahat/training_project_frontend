@@ -1,48 +1,117 @@
 import { Component, OnInit } from '@angular/core';
 import { Request, RequestService } from '../request.service';
-import { map } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { map } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-show-request',
+  selector: 'app-access-requests',
   templateUrl: './show-request.component.html',
-  styleUrl: './show-request.component.scss',
+  styleUrls: ['./show-request.component.scss'],
 })
-export class ShowRequestComponent implements OnInit {
+export class AccessRequestsComponent implements OnInit {
+  requests: Request[] = [];
+  searchTerm: string = '';
+  statusFilter: string = 'all';
+
   constructor(
     private requestService: RequestService,
     private toastr: ToastrService
   ) {}
 
-  requests: Partial<Request>[] = [];
-
   ngOnInit(): void {
+    this.loadRequests();
+  }
+
+  loadRequests(): void {
     this.requestService
       .showRequest()
       .pipe(map((res) => res.data))
       .subscribe({
         next: (data) => {
-          console.log(data);
+          // Mark new requests for animation
+          const newRequests = data.map((request) => ({
+            ...request,
+            isNew: true,
+          }));
 
-          this.requests.push(...data);
+          this.requests = [...newRequests];
+
+          // Remove isNew flag after animation
+          setTimeout(() => {
+            this.requests = this.requests.map((request) => ({
+              ...request,
+              isNew: false,
+            }));
+          }, 1000);
+        },
+        error: (err) => {
+          this.toastr.error('Failed to load requests');
+          console.error(err);
         },
       });
   }
 
-  getStatusClass(status: string): string {
-    return status.toLowerCase();
+  get filteredRequests(): Request[] {
+    return this.requests.filter((request) => {
+      // Apply search filter
+      const searchMatch = this.searchTerm
+        ? request.user.name
+            .toLowerCase()
+            .includes(this.searchTerm.toLowerCase()) ||
+          request.user.email
+            .toLowerCase()
+            .includes(this.searchTerm.toLowerCase()) ||
+          request.workspace.name
+            .toLowerCase()
+            .includes(this.searchTerm.toLowerCase())
+        : true;
+
+      // Apply status filter
+      const statusMatch =
+        this.statusFilter === 'all'
+          ? true
+          : request.status === this.statusFilter;
+
+      return searchMatch && statusMatch;
+    });
   }
 
-  approveRequest(request: any): void {
+  approveRequest(request: Request): void {
     this.requestService
-      .approveRequest(request.user.id, request.workspace.id)
+      .approveRequest(+request.user.id, request.workspace.id)
       .subscribe({
-        next: (data) => this.toastr.success(data.message),
+        next: (data) => {
+          request.status = 'approved';
+          this.toastr.success(data.message || 'Request approved successfully');
+        },
+        error: (err) => {
+          this.toastr.error('Failed to approve request');
+          console.error(err);
+        },
       });
-    request.status = 'approved';
   }
 
-  rejectRequest(request: any): void {
-    request.status = 'rejected';
+  rejectRequest(request: Request): void {
+    // this.requestService
+    //   .rejectRequest(request.user.id, request.workspace.id)
+    //   .subscribe({
+    //     next: (data) => {
+    //       request.status = 'rejected';
+    //       this.toastr.success(data.message || 'Request rejected successfully');
+    //     },
+    //     error: (err) => {
+    //       this.toastr.error('Failed to reject request');
+    //       console.error(err);
+    //     },
+    //   });
+  }
+
+  getInitials(name: string): string {
+    return name
+      .split(' ')
+      .map((part) => part.charAt(0))
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
   }
 }

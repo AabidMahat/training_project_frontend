@@ -69,27 +69,6 @@ export class WorkspaceDetailComponent implements OnInit {
         },
         error: (err) => console.log(err),
       });
-
-    // this.workspaceService.workspaceData$.subscribe({
-    //   next: (data) => {
-    //     this.workspaceData = data;
-
-    //     this.activeUsers = this.workspaceData?.workspaceUser.map((data) => ({
-    //       id: data.user.id,
-    //       name: data.user.name,
-    //       email: data.user.email,
-    //       role: data.user.role,
-    //     }));
-
-    //     this.documents = this.workspaceData?.document.map((data) => ({
-    //       id: data.id,
-    //       title: data.title,
-    //       content: data.content,
-    //       createdAt: data.createdAt,
-    //       updatedAt: data.updatedAt,
-    //     }));
-    //   },
-    // });
   }
 
   isUserPresent(): boolean {

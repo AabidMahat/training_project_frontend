@@ -1,31 +1,87 @@
-<div class="card-container">
-  <div class="card animated responsive shadow" *ngFor="let request of requests">
-    <div class="card-header">
-      <h3>Request: {{ request.request_type }}</h3>
+<div class="request-dashboard">
+  <div class="dashboard-header">
+    <h1>Access Request Management</h1>
+    <div class="filter-controls">
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="Search requests..."
+          [(ngModel)]="searchTerm"
+        />
+        <i class="search-icon fas fa-search"></i>
+      </div>
+      <div class="filter-dropdown">
+        <select [(ngModel)]="statusFilter">
+          <option value="all">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
     </div>
-    <div class="card-body">
-      <p>
-        <strong>User:</strong> {{ request.user.name }} ({{
-          request.user.email
-        }})
-      </p>
-      <p><strong>Workspace:</strong> {{ request.workspace.name }}</p>
-      <p><strong>Requested Role:</strong> {{ request.requested_role }}</p>
-      <p>
-        <strong>Status:</strong>
-        <span [ngClass]="getStatusClass(request.status!)">{{
-          request.status
-        }}</span>
-      </p>
-      <p><strong>Request Created At:</strong> {{ request.createdAt | date }}</p>
+  </div>
+
+  <div class="card-container">
+    <div class="card" *ngFor="let request of filteredRequests">
+      <div class="request-status" [ngClass]="request.status.toLowerCase()">
+        {{ request.status }}
+      </div>
+
+      <div class="card-header">
+        <h3>{{ request.request_type }}</h3>
+        <span class="date">{{ request.createdAt | date : "MMM d, y" }}</span>
+      </div>
+
+      <div class="card-body">
+        <div class="user-info">
+          <div class="avatar">{{ getInitials(request.user.name) }}</div>
+          <div class="details">
+            <h4>{{ request.user.name }}</h4>
+            <a href="mailto:{{ request.user.email }}">{{
+              request.user.email
+            }}</a>
+          </div>
+        </div>
+
+        <div class="request-details">
+          <div class="detail-row">
+            <span class="label">Workspace:</span>
+            <span class="value">{{ request.workspace.name }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Role:</span>
+            <span class="value">{{ request.requested_role }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="card-footer"
+        [ngClass]="{ disabled: request.status !== 'pending' }"
+      >
+        <button
+          class="approve-btn"
+          [disabled]="request.status !== 'pending'"
+          (click)="approveRequest(request)"
+        >
+          <i class="fas fa-check"></i> Approve
+        </button>
+        <button
+          class="reject-btn"
+          [disabled]="request.status !== 'pending'"
+          (click)="rejectRequest(request)"
+        >
+          <i class="fas fa-times"></i> Reject
+        </button>
+      </div>
     </div>
-    <div class="card-footer">
-      <button class="approve-btn" (click)="approveRequest(request)">
-        Approve
-      </button>
-      <button class="reject-btn" (click)="rejectRequest(request)">
-        Reject
-      </button>
+
+    <div class="empty-state" *ngIf="filteredRequests.length === 0">
+      <div class="empty-icon">
+        <i class="fas fa-inbox"></i>
+      </div>
+      <h3>No requests found</h3>
+      <p>There are no access requests matching your current filters</p>
     </div>
   </div>
 </div>

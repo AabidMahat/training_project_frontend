@@ -1,0 +1,187 @@
+<!-- home.component.html -->
+<div class="home-container">
+  <header class="header">
+    <div class="logo-container">
+      <img src="assets/images/logo.svg" alt="Collaborate" class="logo" />
+      <h1>Collaborate</h1>
+    </div>
+    <nav class="navigation">
+      <a href="#" class="nav-link active">Home</a>
+      <a href="#" class="nav-link">Workspaces</a>
+      <a href="#" class="nav-link">Documents</a>
+      <a href="#" class="nav-link">Teams</a>
+      <a href="#" class="nav-link">Settings</a>
+    </nav>
+    <div class="user-controls">
+      <div class="notifications">
+        <span class="material-icons">notifications</span>
+        <span class="badge">3</span>
+      </div>
+      <div class="user-profile">
+        <img src="assets/images/avatar.jpg" alt="User Profile" class="avatar" />
+        <span class="username">John Doe</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="hero">
+      <div class="hero-content">
+        <h2>Real-time collaboration made simple</h2>
+        <p>
+          Work together with your team in real-time, regardless of location.
+          Edit documents, share ideas, and collaborate seamlessly.
+        </p>
+        <div class="cta-buttons">
+          <button class="btn primary">Create Workspace</button>
+          <button class="btn secondary">Join Existing</button>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img
+          src="assets/images/collaboration.svg"
+          alt="Collaboration Illustration"
+        />
+      </div>
+    </section>
+
+    <section class="recent-activity">
+      <div class="section-header">
+        <h3>Recent Activity</h3>
+        <a href="#" class="view-all">View All</a>
+      </div>
+      <div class="activity-list">
+        <div class="activity-card" *ngFor="let activity of recentActivities">
+          <div class="activity-icon" [ngClass]="activity.type">
+            <span class="material-icons">{{ activity.icon }}</span>
+          </div>
+          <div class="activity-details">
+            <h4>{{ activity.title }}</h4>
+            <p>{{ activity.description }}</p>
+            <div class="activity-meta">
+              <span class="time">{{ activity.time | timeAgo }}</span>
+              <span class="user">{{ activity.user }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="workspaces">
+      <div class="section-header">
+        <h3>Your Workspaces</h3>
+        <button class="btn icon-btn">
+          <span class="material-icons">add</span>
+          <span>New</span>
+        </button>
+      </div>
+      <div class="workspace-grid">
+        <div class="workspace-card" *ngFor="let workspace of workspaces">
+          <div
+            class="workspace-header"
+            [ngStyle]="{ 'background-color': workspace.color }"
+          >
+            <span class="material-icons">{{ workspace.icon }}</span>
+          </div>
+          <div class="workspace-content">
+            <h4>{{ workspace.name }}</h4>
+            <p>{{ workspace.description }}</p>
+            <div class="workspace-meta">
+              <div class="members">
+                <div class="member-avatars">
+                  <img
+                    *ngFor="let member of workspace.members.slice(0, 3)"
+                    [src]="'assets/images/avatars/' + member.avatar"
+                    [alt]="member.name"
+                    class="member-avatar"
+                  />
+                  <div
+                    class="more-members"
+                    *ngIf="workspace.members.length > 3"
+                  >
+                    +{{ workspace.members.length - 3 }}
+                  </div>
+                </div>
+              </div>
+              <span class="last-updated"
+                >Updated {{ workspace.lastUpdated | timeAgo }}</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="quick-actions">
+      <div class="action-card">
+        <span class="material-icons">description</span>
+        <h4>Create Document</h4>
+        <p>Start a new document to collaborate on</p>
+      </div>
+      <div class="action-card">
+        <span class="material-icons">group_add</span>
+        <h4>Invite Team</h4>
+        <p>Add members to your workspace</p>
+      </div>
+      <div class="action-card">
+        <span class="material-icons">cloud_upload</span>
+        <h4>Upload Files</h4>
+        <p>Share files with your team</p>
+      </div>
+      <div class="action-card">
+        <span class="material-icons">event</span>
+        <h4>Schedule Meeting</h4>
+        <p>Plan your next collaboration session</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <div class="footer-section">
+        <h5>Product</h5>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Integrations</a>
+        <a href="#">Updates</a>
+      </div>
+      <div class="footer-section">
+        <h5>Company</h5>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+        <a href="#">Blog</a>
+      </div>
+      <div class="footer-section">
+        <h5>Resources</h5>
+        <a href="#">Documentation</a>
+        <a href="#">Community</a>
+        <a href="#">Support</a>
+        <a href="#">API</a>
+      </div>
+      <div class="footer-section">
+        <h5>Legal</h5>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Collaborate. All rights reserved.</p>
+      <div class="social-links">
+        <a href="#" aria-label="Twitter"
+          ><span class="material-icons">twitter</span></a
+        >
+        <a href="#" aria-label="LinkedIn"
+          ><span class="material-icons">linkedin</span></a
+        >
+        <a href="#" aria-label="GitHub"
+          ><span class="material-icons">github</span></a
+        >
+        <a href="#" aria-label="YouTube"
+          ><span class="material-icons">youtube</span></a
+        >
+      </div>
+    </div>
+  </footer>
+</div>

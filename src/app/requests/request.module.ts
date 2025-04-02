@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
-import { ShowRequestComponent } from './show-request/show-request.component';
+import { AccessRequestsComponent } from './show-request/show-request.component';
 import { RequestRoutingModule } from './request.routing';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [ShowRequestComponent],
-  imports: [RequestRoutingModule, CommonModule],
-  exports: [ShowRequestComponent],
+  declarations: [AccessRequestsComponent],
+  imports: [RequestRoutingModule, CommonModule, FormsModule],
+  exports: [AccessRequestsComponent],
 })
 export class RequestModule {}

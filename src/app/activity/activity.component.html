@@ -1,22 +1,140 @@
-<table class="activity-table">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Action</th>
-      <th>Timestamp</th>
-      <th>User</th>
-      <th>Document</th>
-      <th>Workspace</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let activity of activities">
-      <td>{{ activity.id }}</td>
-      <td>{{ activity.action }}</td>
-      <td>{{ activity.timestamp | date : "short" }}</td>
-      <td>{{ activity.user.name }} ({{ activity.user.role }})</td>
-      <td>{{ activity.document ? activity.document.title : "-" }}</td>
-      <td>{{ activity.workspace ? activity.workspace.name : "-" }}</td>
-    </tr>
-  </tbody>
-</table>
+<div class="activity-dashboard">
+  <div class="dashboard-header">
+    <h1>Activity Log</h1>
+    <div class="dashboard-controls">
+      <div class="search-container">
+        <input
+          type="text"
+          placeholder="Search activities..."
+          [(ngModel)]="searchTerm"
+        />
+        <i class="search-icon fas fa-search"></i>
+      </div>
+      <div class="filter-container">
+        <select [(ngModel)]="actionFilter">
+          <option value="all">All Actions</option>
+          <option value="create">Create</option>
+          <option value="update">Update</option>
+          <option value="delete">Delete</option>
+          <option value="view">View</option>
+          <option value="share">Share</option>
+        </select>
+      </div>
+      <div class="date-filter">
+        <input type="date" [(ngModel)]="startDate" />
+        <span class="date-separator">to</span>
+        <input type="date" [(ngModel)]="endDate" />
+      </div>
+    </div>
+  </div>
+
+  <div class="activity-table-container">
+    <table class="activity-table">
+      <thead>
+        <tr>
+          <th class="col-id">ID</th>
+          <th class="col-action">Action</th>
+          <th class="col-timestamp">Timestamp</th>
+          <th class="col-user">User</th>
+          <th class="col-document">Document</th>
+          <th class="col-workspace">Workspace</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let activity of filteredActivities"
+          class="activity-row"
+          [ngClass]="getActionClass(activity.action)"
+        >
+          <td class="col-id">{{ activity.id }}</td>
+          <td class="col-action">
+            <div
+              class="action-badge"
+              [ngClass]="getActionClass(activity.action)"
+            >
+              <i
+                class="action-icon"
+                [ngClass]="getActionIcon(activity.action)"
+              ></i>
+              {{ activity.action }}
+            </div>
+          </td>
+          <td class="col-timestamp">
+            <div class="timestamp-container">
+              <span class="date">{{
+                activity.timestamp | date : "MMM d, y"
+              }}</span>
+              <span class="time">{{
+                activity.timestamp | date : "h:mm a"
+              }}</span>
+            </div>
+          </td>
+          <td class="col-user">
+            <div class="user-info">
+              <div class="avatar">
+                {{ getUserInitials(activity.user.name) }}
+              </div>
+              <div class="user-details">
+                <div class="user-name">{{ activity.user.name }}</div>
+                <div class="user-role">{{ activity.user.role }}</div>
+              </div>
+            </div>
+          </td>
+          <td class="col-document">
+            <ng-container *ngIf="activity.document; else noDocument">
+              <div class="document-info">
+                <i class="fas fa-file-alt document-icon"></i>
+                <span class="document-title">{{
+                  activity.document.title
+                }}</span>
+              </div>
+            </ng-container>
+            <ng-template #noDocument>
+              <span class="empty-value">—</span>
+            </ng-template>
+          </td>
+          <td class="col-workspace">
+            <ng-container *ngIf="activity.workspace; else noWorkspace">
+              <div class="workspace-info">
+                <i class="fas fa-folder workspace-icon"></i>
+                <span class="workspace-name">{{
+                  activity.workspace.name
+                }}</span>
+              </div>
+            </ng-container>
+            <ng-template #noWorkspace>
+              <span class="empty-value">—</span>
+            </ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="empty-state" *ngIf="filteredActivities.length === 0">
+      <div class="empty-state-icon">
+        <i class="fas fa-history"></i>
+      </div>
+      <h3>No activities found</h3>
+      <p>There are no activities matching your current filters</p>
+      <button class="reset-filters-btn" (click)="resetFilters()">
+        Reset Filters
+      </button>
+    </div>
+  </div>
+
+  <div class="pagination-controls" *ngIf="filteredActivities.length > 0">
+    <div class="pagination-info">
+      Showing {{ paginationStart }} to {{ paginationEnd }} of
+      {{ filteredActivities.length }} activities
+    </div>
+    <div class="pagination-buttons">
+      <button [disabled]="currentPage === 1" (click)="prevPage()">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <span class="page-number">{{ currentPage }}</span>
+      <button [disabled]="currentPage === totalPages" (click)="nextPage()">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>

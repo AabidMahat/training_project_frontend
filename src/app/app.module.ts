@@ -24,9 +24,16 @@ import { ErrorInterceptor } from './interceptor/error.interceptor';
 import { WorkspaceModule } from './dashboard/workspace.module';
 import { RequestModule } from './requests/request.module';
 import { ActivityModule } from './activity/activity.module';
+import { HomeComponent } from './home/home.component';
+import { TimeAgoPipe } from './home/time.pipe';
 
 @NgModule({
-  declarations: [AppComponent, AddDocumentComponent],
+  declarations: [
+    AppComponent,
+    AddDocumentComponent,
+    HomeComponent,
+    TimeAgoPipe,
+  ],
   imports: [
     BrowserAnimationsModule,
     RouterModule,
@@ -40,7 +47,9 @@ import { ActivityModule } from './activity/activity.module';
 
     ReactiveFormsModule,
     HttpClientModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot({
+      positionClass: 'toast-top-center',
+    }),
     FormsModule,
     QuillModule.forRoot(),
   ],

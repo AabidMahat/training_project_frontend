@@ -29,18 +29,18 @@
         <div class="workspace-meta">
           <span class="active-users">
             <i class="user-icon"></i>
-            {{ workspace.workspaceUser?.length || 0 }} members
+            {{ workspace.workspaceUser!.length || 0 }} members
           </span>
           <span class="document-count">
             <i class="document-icon"></i>
-            {{ workspace.document?.length || 0 }} docs
+            {{ workspace.document!.length || 0 }} docs
           </span>
         </div>
       </div>
       <div class="card-footer">
         <div class="member-indicators">
           <div class="member-count">
-            {{ workspace.workspaceUser?.length || 0 }} collaborators
+            {{ workspace.workspaceUser!.length || 0 }} collaborators
           </div>
         </div>
         <span class="view-btn">Open</span>

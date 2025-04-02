@@ -1,11 +1,11 @@
 import { RouterModule, Routes } from '@angular/router';
-import { ShowRequestComponent } from './show-request/show-request.component';
+import { AccessRequestsComponent } from './show-request/show-request.component';
 import { NgModule } from '@angular/core';
 
 const routes: Routes = [
   {
     path: 'showRequest',
-    component: ShowRequestComponent,
+    component: AccessRequestsComponent,
   },
 ];
 @NgModule({

@@ -3,8 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { RegisterComponent } from './auth/register/register.component';
 import { LoginComponent } from './auth/login/login.component';
 import { AddDocumentComponent } from './documents/add-document/add-document.component';
+import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
+  {
+    path: '',
+    component: HomeComponent,
+  },
   {
     path: 'dashboard',
     loadChildren: () =>

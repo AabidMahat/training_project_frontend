@@ -1,97 +1,169 @@
-<div class="register-container">
-  <h2>Registration Form</h2>
-  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
-    <!-- Name -->
-    <div class="form-group">
-      <label for="name">Full Name</label>
-      <input
-        type="text"
-        id="name"
-        formControlName="name"
-        placeholder="Enter your full name"
-      />
-      <small
-        *ngIf="
-          registrationForm.get('name')?.touched &&
-          registrationForm.get('name')?.invalid
-        "
+<div class="container">
+  <div class="register-card">
+    <div class="register-header">
+      <h2>Create an Account</h2>
+      <p>Fill in your details to get started</p>
+    </div>
+
+    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+      <!-- Name -->
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <div class="input-with-icon">
+          <i class="fas fa-user"></i>
+          <input
+            type="text"
+            id="name"
+            formControlName="name"
+            placeholder="Enter your full name"
+          />
+        </div>
+        <div class="error-message" *ngIf="name?.touched && name?.errors">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>Name is required.</span>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <div class="input-with-icon">
+          <i class="fas fa-envelope"></i>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            placeholder="Enter your email"
+          />
+        </div>
+        <div class="error-message" *ngIf="email?.touched && email?.errors">
+          <i class="fas fa-exclamation-circle"></i>
+          <span *ngIf="email?.errors?.['required']">Email is required.</span>
+          <span *ngIf="email?.errors?.['email']"
+            >Enter a valid email address.</span
+          >
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-with-icon">
+          <i class="fas fa-lock"></i>
+          <input
+            [type]="hidePassword ? 'password' : 'text'"
+            id="password"
+            formControlName="password"
+            placeholder="Enter your password"
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="togglePasswordVisibility('password')"
+          >
+            <i class="fas fa-eye" *ngIf="hidePassword"></i>
+            <i class="fas fa-eye-slash" *ngIf="!hidePassword"></i>
+          </button>
+        </div>
+        <div
+          class="error-message"
+          *ngIf="password?.touched && password?.errors"
+        >
+          <i class="fas fa-exclamation-circle"></i>
+          <span *ngIf="password?.errors?.['required']"
+            >Password is required.</span
+          >
+          <span *ngIf="password?.errors?.['minlength']"
+            >Password must be at least 6 characters.</span
+          >
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="input-with-icon">
+          <i class="fas fa-lock"></i>
+          <input
+            [type]="hideConfirmPassword ? 'password' : 'text'"
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            placeholder="Confirm your password"
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="togglePasswordVisibility('confirmPassword')"
+          >
+            <i class="fas fa-eye" *ngIf="hideConfirmPassword"></i>
+            <i class="fas fa-eye-slash" *ngIf="!hideConfirmPassword"></i>
+          </button>
+        </div>
+        <div
+          class="error-message"
+          *ngIf="confirmPassword?.touched && confirmPassword?.errors"
+        >
+          <i class="fas fa-exclamation-circle"></i>
+          <span *ngIf="confirmPassword?.errors?.['required']"
+            >Confirm password is required.</span
+          >
+          <span *ngIf="confirmPassword?.errors?.['minlength']"
+            >Password must be at least 6 characters.</span
+          >
+        </div>
+        <div
+          class="error-message"
+          *ngIf="
+            registrationForm.hasError('passwordMismatch') &&
+            confirmPassword?.touched
+          "
+        >
+          <i class="fas fa-exclamation-circle"></i>
+          <span>Passwords do not match.</span>
+        </div>
+      </div>
+
+      <!-- Role -->
+      <div class="form-group">
+        <label for="role">Role</label>
+        <div class="input-with-icon select-wrapper">
+          <i class="fas fa-user-tag"></i>
+          <select id="role" formControlName="role">
+            <option value="" disabled selected>Select your role</option>
+            <option value="viewer">Viewer</option>
+            <option value="editor">Editor</option>
+          </select>
+          <i class="fas fa-chevron-down select-arrow"></i>
+        </div>
+        <div class="error-message" *ngIf="role?.touched && role?.errors">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>Please select a role.</span>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="register-button"
+        [disabled]="registrationForm.invalid"
       >
-        Name is required.
-      </small>
+        Register
+        <i class="fas fa-user-plus"></i>
+      </button>
+    </form>
+
+    <div class="divider">
+      <span>OR</span>
     </div>
 
-    <!-- Email -->
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input
-        type="email"
-        id="email"
-        formControlName="email"
-        placeholder="Enter your email"
-      />
-      <small
-        *ngIf="
-          registrationForm.get('email')?.touched &&
-          registrationForm.get('email')?.invalid
-        "
-      >
-        Enter a valid email.
-      </small>
+    <div class="social-login">
+      <button class="google-btn" type="button">
+        <i class="fab fa-google"></i>
+        Register with Google
+      </button>
     </div>
 
-    <!-- Password -->
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        formControlName="password"
-        placeholder="Enter your password"
-      />
-      <small
-        *ngIf="
-          registrationForm.get('password')?.touched &&
-          registrationForm.get('password')?.invalid
-        "
-      >
-        Password must be at least 6 characters.
-      </small>
+    <div class="login-link">
+      Already have an account? <a routerLink="/login">Log in</a>
     </div>
-
-    <!-- Confirm Password -->
-    <div class="form-group">
-      <label for="confirmPassword">Confirm Password</label>
-      <input
-        type="password"
-        id="confirmPassword"
-        formControlName="confirmPassword"
-        placeholder="Confirm your password"
-      />
-      <small *ngIf="registrationForm.hasError('passwordMismatch')">
-        Passwords do not match.
-      </small>
-    </div>
-
-    <!-- Role -->
-    <div class="form-group">
-      <label for="role">Role</label>
-      <select id="role" formControlName="role">
-        <option value="" disabled>Select your role</option>
-        <option value="viewer">Viewer</option>
-        <option value="editor">Editor</option>
-      </select>
-      <small
-        *ngIf="
-          registrationForm.get('role')?.touched &&
-          registrationForm.get('role')?.invalid
-        "
-      >
-        Please select a role.
-      </small>
-    </div>
-
-    <button type="submit" [disabled]="registrationForm.invalid">
-      Register
-    </button>
-  </form>
+  </div>
 </div>
