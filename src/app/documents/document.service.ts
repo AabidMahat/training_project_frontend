@@ -24,4 +24,11 @@ export class DocumentService {
       data
     );
   }
+
+  getDocumentById(documentId: number) {
+    return this.httpClient.get<{
+      message: string;
+      data: Partial<Document>;
+    }>(`${this.APIURL}/document/${documentId}`)
+  }
 }

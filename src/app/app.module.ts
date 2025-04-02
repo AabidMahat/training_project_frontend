@@ -15,30 +15,29 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ToastrModule } from 'ngx-toastr';
-import { WorkspaceComponent } from './dashboard/workspace/workspace.component';
-import { DashboardDetailComponent } from './dashboard/workspace-details/workspace-details.component';
-import { AuthInterceptor } from './auth.interceptor';
-import { CreateWorkspaceComponent } from './dashboard/create-workspace/create-workspace.component';
-import { JoinWorkspaceComponent } from './dashboard/join-workspace/join-workspace.component';
+
+import { AuthInterceptor } from './interceptor/auth.interceptor';
+
 import { RouterModule } from '@angular/router';
 import { AddDocumentComponent } from './documents/add-document/add-document.component';
+import { ErrorInterceptor } from './interceptor/error.interceptor';
+import { WorkspaceModule } from './dashboard/workspace.module';
+import { RequestModule } from './requests/request.module';
+import { ActivityModule } from './activity/activity.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    WorkspaceComponent,
-    DashboardDetailComponent,
-    CreateWorkspaceComponent,
-    JoinWorkspaceComponent,
-    AddDocumentComponent,
-  ],
+  declarations: [AppComponent, AddDocumentComponent],
   imports: [
     BrowserAnimationsModule,
     RouterModule,
-
     BrowserModule,
     AppRoutingModule,
+
     AuthModule,
+    WorkspaceModule,
+    RequestModule,
+    ActivityModule,
+
     ReactiveFormsModule,
     HttpClientModule,
     ToastrModule.forRoot(),
@@ -50,6 +49,11 @@ import { AddDocumentComponent } from './documents/add-document/add-document.comp
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
       multi: true,
     },
   ],

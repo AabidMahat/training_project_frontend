@@ -1,0 +1,22 @@
+<table class="activity-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Action</th>
+      <th>Timestamp</th>
+      <th>User</th>
+      <th>Document</th>
+      <th>Workspace</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let activity of activities">
+      <td>{{ activity.id }}</td>
+      <td>{{ activity.action }}</td>
+      <td>{{ activity.timestamp | date : "short" }}</td>
+      <td>{{ activity.user.name }} ({{ activity.user.role }})</td>
+      <td>{{ activity.document ? activity.document.title : "-" }}</td>
+      <td>{{ activity.workspace ? activity.workspace.name : "-" }}</td>
+    </tr>
+  </tbody>
+</table>

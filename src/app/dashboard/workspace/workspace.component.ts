@@ -68,19 +68,6 @@ export class WorkspaceComponent implements OnInit {
   }
 
   openWorkspace(workspaceId: string) {
-    this.workspaceService
-      .getWorkspaceById(workspaceId)
-      .pipe(
-        map((res) => res.data),
-        catchError((err) => throwError(() => err))
-      )
-      .subscribe({
-        next: (data) => {
-          console.log(data);
-          this.workspaceService.workspaceSubject.next(data);
-          this.router.navigate(['/workspace', workspaceId]);
-        },
-        error: (err) => console.log(err),
-      });
+    this.router.navigate(['/workspace', workspaceId]);
   }
 }

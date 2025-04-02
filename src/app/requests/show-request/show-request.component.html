@@ -1,0 +1,31 @@
+<div class="card-container">
+  <div class="card animated responsive shadow" *ngFor="let request of requests">
+    <div class="card-header">
+      <h3>Request: {{ request.request_type }}</h3>
+    </div>
+    <div class="card-body">
+      <p>
+        <strong>User:</strong> {{ request.user.name }} ({{
+          request.user.email
+        }})
+      </p>
+      <p><strong>Workspace:</strong> {{ request.workspace.name }}</p>
+      <p><strong>Requested Role:</strong> {{ request.requested_role }}</p>
+      <p>
+        <strong>Status:</strong>
+        <span [ngClass]="getStatusClass(request.status!)">{{
+          request.status
+        }}</span>
+      </p>
+      <p><strong>Request Created At:</strong> {{ request.createdAt | date }}</p>
+    </div>
+    <div class="card-footer">
+      <button class="approve-btn" (click)="approveRequest(request)">
+        Approve
+      </button>
+      <button class="reject-btn" (click)="rejectRequest(request)">
+        Reject
+      </button>
+    </div>
+  </div>
+</div>
