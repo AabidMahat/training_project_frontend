@@ -49,9 +49,35 @@ export class WorkspaceService {
     }>(`${this.APIURL}/workspace/getWorkspace/${workspaceId}`);
   }
 
+  getUserByWorkspace(workspaceId: string) {
+    return this.httpClient.get<{
+      message: string;
+      data: {
+        role: string;
+        user: {
+          id: number;
+          name: string;
+          email: string;
+        };
+      }[];
+    }>(`${this.APIURL}/workspaceUser/getUserByWorkspaceId/${workspaceId}`);
+  }
+
   joinWorkspace(workspaceId: string, joinData: JoinData) {
     return this.httpClient.post<{
       message: string;
     }>(`${this.APIURL}/workspaceUser/sendRequest/${workspaceId}`, joinData);
+  }
+
+  removeWorkspace(workspaceId: string) {
+    return this.httpClient.delete(
+      `${this.APIURL}/workspace/remove/${workspaceId}`
+    );
+  }
+
+  removeUser(workspaceId: string, userId: number) {
+    return this.httpClient.delete(
+      `${this.APIURL}/workspaceUser/removeUser/${workspaceId}/${userId}`
+    );
   }
 }

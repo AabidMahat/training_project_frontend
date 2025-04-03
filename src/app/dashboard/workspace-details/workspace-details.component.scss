@@ -397,3 +397,32 @@ $transition-standard: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   min-height: 300px;
   font-size: 16px;
 }
+
+// Variables for consistent styling
+$primary-color: #007bff;
+$hover-color: #0056b3;
+$border-radius: 5px;
+$font-family: "Arial, sans-serif";
+
+// Styling for the save button
+.save-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: $primary-color;
+  color: #fff;
+  border: none;
+  border-radius: $border-radius;
+  font-family: $font-family;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $hover-color;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 5px $primary-color;
+  }
+}

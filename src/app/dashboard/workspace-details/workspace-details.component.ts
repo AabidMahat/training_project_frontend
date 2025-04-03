@@ -1,12 +1,20 @@
+import { Workspace } from './../workspace.modal';
 // dashboard.component.ts
-import { Component, OnInit } from '@angular/core';
-import { jwtDecode } from 'jwt-decode';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { WorkspaceData, WorkspaceService } from '../workspace.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { DocumentService, Document } from '../../documents/document.service';
 import { catchError, map, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { QuillEditorComponent } from 'ngx-quill';
 
 interface User {
   id: number;
@@ -30,17 +38,17 @@ export class WorkspaceDetailComponent implements OnInit {
     private toastr: ToastrService
   ) {}
   workspaceName: string = 'My Workspace';
-
   selectedDocument: Partial<Document> | null = null;
-
   workspaceData: WorkspaceData | null = null;
-
   activeUsers: User[] | undefined = [];
-
   documents: Partial<Document>[] | undefined = [];
+
+  @ViewChild('quillEditor') editor!: QuillEditorComponent;
 
   ngOnInit(): void {
     const workspaceId = this.activateRoute.snapshot.paramMap.get('workspaceId');
+
+    this.getUserByWorkspace(workspaceId!);
 
     this.workspaceService
       .getWorkspaceById(workspaceId!)
@@ -51,13 +59,6 @@ export class WorkspaceDetailComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.workspaceData = data;
-
-          this.activeUsers = this.workspaceData?.workspaceUser.map((data) => ({
-            id: data.user.id,
-            name: data.user.name,
-            email: data.user.email,
-            role: data.user.role,
-          }));
 
           this.documents = this.workspaceData?.document.map((data) => ({
             id: data.id,
@@ -74,6 +75,34 @@ export class WorkspaceDetailComponent implements OnInit {
   isUserPresent(): boolean {
     const token: any = jwtDecode(this.cookieService.get('jwt'));
     return this.activeUsers!.some((data) => data.id === token.id);
+  }
+
+  getUserByWorkspace(workspaceId: string) {
+    this.workspaceService
+      .getUserByWorkspace(workspaceId)
+      .pipe(map((res) => res.data))
+      .subscribe({
+        next: (data) => {
+          console.log('Data', data);
+
+          this.activeUsers = data.map((val) => ({
+            id: val.user.id,
+            name: val.user.name,
+            email: val.user.email,
+            role: val.role,
+          }));
+        },
+        error: (err) => console.log(err),
+      });
+  }
+
+  getUserRole() {
+    const token: any = jwtDecode(this.cookieService.get('jwt'));
+
+    const role: string = this.activeUsers?.find((user) => user.id === token.id)
+      ?.role!;
+
+    return role;
   }
 
   joinWorkspace(): void {
@@ -101,5 +130,57 @@ export class WorkspaceDetailComponent implements OnInit {
           this.selectedDocument = data;
         },
       });
+  }
+
+  updateDocument() {
+    console.log(this.selectedDocument?.content);
+    const plainText = this.editor.quillEditor.getText();
+    this.documentService
+      .updateDocument(this.selectedDocument?.id!, plainText)
+      .subscribe({
+        next: () =>
+          this.toastr.success('Document Updated', '', {
+            positionClass: 'toast-top-center',
+          }),
+      });
+  }
+
+  removeWorkspace() {
+    const workspaceId = this.activateRoute.snapshot.paramMap.get('workspaceId');
+
+    this.workspaceService.removeWorkspace(workspaceId!).subscribe({
+      next: () => {
+        this.toastr.success('Workspace Removed', '', {
+          positionClass: 'toast-top-center',
+        });
+        this.router.navigate(['/workspace']);
+      },
+
+      error: (err) => {
+        this.toastr.error(err, '', {
+          positionClass: 'toast-top-center',
+        });
+      },
+    });
+  }
+
+  removeUserFromWorkspace(userId: number) {
+    const workspaceId = this.activateRoute.snapshot.paramMap.get('workspaceId');
+    console.log('Clicked');
+
+    this.workspaceService.removeUser(workspaceId!, userId).subscribe({
+      next: () => {
+        this.toastr.success('User Removed', '', {
+          positionClass: 'toast-top-center',
+        });
+        this.router.navigate(['/workspace']);
+      },
+
+      error: (err) => {
+        this.toastr.error(err, '', {
+          positionClass: 'toast-top-center',
+        });
+      },
+    });
   }
 }

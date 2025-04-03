@@ -4,30 +4,12 @@ import { RegisterComponent } from './auth/register/register.component';
 import { LoginComponent } from './auth/login/login.component';
 import { AddDocumentComponent } from './documents/add-document/add-document.component';
 import { HomeComponent } from './home/home.component';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
-  },
-  {
-    path: 'dashboard',
-    loadChildren: () =>
-      import('./dashboard/workspace.module').then((m) => m.WorkspaceModule),
-  },
-  {
-    path: 'add-document/:workspaceId',
-    component: AddDocumentComponent,
-  },
-  {
-    path: 'request',
-    loadChildren: () =>
-      import('./requests/request.module').then((m) => m.RequestModule),
-  },
-  {
-    path: 'activity',
-    loadChildren: () =>
-      import('./activity/activity.module').then((m) => m.ActivityModule),
   },
   {
     path: 'register',
@@ -36,6 +18,32 @@ const routes: Routes = [
   {
     path: 'loginUser',
     component: LoginComponent,
+  },
+  {
+    path: 'dashboard',
+    canLoad: [AuthGuard],
+    loadChildren: () =>
+      import('./dashboard/workspace.module').then((m) => m.WorkspaceModule),
+  },
+  {
+    path: 'add-document/:workspaceId',
+    canActivate: [AuthGuard],
+
+    component: AddDocumentComponent,
+  },
+  {
+    path: 'request',
+    canActivate: [AuthGuard],
+
+    loadChildren: () =>
+      import('./requests/request.module').then((m) => m.RequestModule),
+  },
+  {
+    path: 'activity',
+    canActivate: [AuthGuard],
+
+    loadChildren: () =>
+      import('./activity/activity.module').then((m) => m.ActivityModule),
   },
 ];
 

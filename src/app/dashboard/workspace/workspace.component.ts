@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { WorkspaceService } from '../workspace.service';
 import { catchError, map, throwError } from 'rxjs';
 import { Workspace } from '../workspace.modal';
+import { SocketService } from '../../socket/socket.service';
 
 @Component({
   selector: 'app-workspace',
@@ -57,10 +58,6 @@ export class WorkspaceComponent implements OnInit {
       id.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) %
       this.colorPalette.length;
     return this.colorPalette[index];
-  }
-
-  createWorkspace(): void {
-    console.log('Create workspace clicked');
   }
 
   onCreateWorkspace() {

@@ -29,6 +29,15 @@ export class DocumentService {
     return this.httpClient.get<{
       message: string;
       data: Partial<Document>;
-    }>(`${this.APIURL}/document/${documentId}`)
+    }>(`${this.APIURL}/document/${documentId}`);
+  }
+
+  updateDocument(documentId: number, content: string) {
+    return this.httpClient.patch(
+      `${this.APIURL}/document/update/${documentId}`,
+      {
+        content,
+      }
+    );
   }
 }

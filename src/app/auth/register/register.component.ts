@@ -9,6 +9,7 @@ import { AuthService } from '../auth.service';
 import { catchError, map, throwError } from 'rxjs';
 import { User } from '../auth.modal';
 import { ToastrService } from 'ngx-toastr';
+import { Toastr } from '../../shared/toastr.shared';
 
 function passwordMatch(
   controls: AbstractControl
@@ -25,13 +26,7 @@ function passwordMatch(
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent {
-  hidePassword = true;
-  hideConfirmPassword = true;
-
-  constructor(
-    private authService: AuthService,
-    private toastr: ToastrService
-  ) {}
+  constructor(private authService: AuthService, private toastr: Toastr) {}
 
   registrationForm = new FormGroup(
     {
@@ -52,14 +47,6 @@ export class RegisterComponent {
     }
   );
 
-  togglePasswordVisibility(field: 'password' | 'confirmPassword'): void {
-    if (field === 'password') {
-      this.hidePassword = !this.hidePassword;
-    } else {
-      this.hideConfirmPassword = !this.hideConfirmPassword;
-    }
-  }
-
   onSubmit() {
     if (this.registrationForm.valid) {
       this.authService
@@ -73,24 +60,17 @@ export class RegisterComponent {
         )
         .subscribe({
           next: (data) => {
-            this.toastr.success('Registration Successful');
+            this.toastr.showToast('success', 'Registration Successful');
             console.log('Registration Successful:', data);
           },
           error: (err) => {
-            this.toastr.error('Error in Registration');
+            this.toastr.showToast('error', 'Error in Registration');
             console.log('Error:', err);
           },
         });
-    } else {
-      // Mark all fields as touched to trigger validation messages
-      Object.keys(this.registrationForm.controls).forEach((key) => {
-        const control = this.registrationForm.get(key);
-        control!.markAsTouched();
-      });
     }
   }
 
-  // Helper getter methods for form controls
   get name() {
     return this.registrationForm.get('name');
   }

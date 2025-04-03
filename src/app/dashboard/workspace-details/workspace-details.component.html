@@ -35,9 +35,18 @@
     <!-- Document Detail View (moved from bottom grid area to main content) -->
     <section class="document-detail" *ngIf="selectedDocument">
       <h2>{{ selectedDocument.title }}</h2>
-      <!-- <p>{{ selectedDocument.content }}</p> -->
-      <quill-editor [(ngModel)]="selectedDocument.content"></quill-editor>
-      <button class="save-btn">Save</button>
+
+      <p *ngIf="getUserRole() === 'viewer'; else quill">
+        {{ selectedDocument.content }}
+      </p>
+
+      <ng-template #quill>
+        <quill-editor
+          [(ngModel)]="selectedDocument.content"
+          #quillEditor
+        ></quill-editor>
+        <button class="save-btn" (click)="updateDocument()">Save</button>
+      </ng-template>
     </section>
 
     <!-- Placeholder when no document is selected -->
@@ -52,7 +61,12 @@
       <h2>Active Users</h2>
     </div>
     <ul class="user-list">
-      <li *ngFor="let user of activeUsers" class="user-item {{ user.role }}">
+      <li
+        *ngFor="let user of activeUsers"
+        class="user-item {{ user.role }}"
+        (click)="removeUserFromWorkspace(user.id)"
+      >
+        <!-- <a (click)="removeUserFromWorkspace(user.id)">ffffff</a> -->
         <div class="user-avatar">
           {{ user.name.slice(0, 2) }}
         </div>
@@ -63,5 +77,8 @@
         </div>
       </li>
     </ul>
+    <button class="save-btn" (click)="removeWorkspace()">
+      Delete Workspace
+    </button>
   </aside>
 </div>

@@ -51,18 +51,13 @@
         <div class="input-with-icon">
           <i class="fas fa-lock"></i>
           <input
-            [type]="hidePassword ? 'password' : 'text'"
+            type="password"
             id="password"
             formControlName="password"
             placeholder="Enter your password"
           />
-          <button
-            type="button"
-            class="toggle-password"
-            (click)="togglePasswordVisibility('password')"
-          >
-            <i class="fas fa-eye" *ngIf="hidePassword"></i>
-            <i class="fas fa-eye-slash" *ngIf="!hidePassword"></i>
+          <button type="button" class="toggle-password">
+            <i class="fas fa-eye-slash"></i>
           </button>
         </div>
         <div
@@ -85,18 +80,13 @@
         <div class="input-with-icon">
           <i class="fas fa-lock"></i>
           <input
-            [type]="hideConfirmPassword ? 'password' : 'text'"
+            type="password"
             id="confirmPassword"
             formControlName="confirmPassword"
             placeholder="Confirm your password"
           />
-          <button
-            type="button"
-            class="toggle-password"
-            (click)="togglePasswordVisibility('confirmPassword')"
-          >
-            <i class="fas fa-eye" *ngIf="hideConfirmPassword"></i>
-            <i class="fas fa-eye-slash" *ngIf="!hideConfirmPassword"></i>
+          <button type="button" class="toggle-password">
+            <i class="fas fa-eye-slash"></i>
           </button>
         </div>
         <div
@@ -104,6 +94,7 @@
           *ngIf="confirmPassword?.touched && confirmPassword?.errors"
         >
           <i class="fas fa-exclamation-circle"></i>
+
           <span *ngIf="confirmPassword?.errors?.['required']"
             >Confirm password is required.</span
           >

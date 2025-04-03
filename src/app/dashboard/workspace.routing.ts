@@ -4,22 +4,31 @@ import { CreateWorkspaceComponent } from './create-workspace/create-workspace.co
 import { JoinWorkspaceComponent } from './join-workspace/join-workspace.component';
 import { WorkspaceDetailComponent } from './workspace-details/workspace-details.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
+import { AuthGuard } from '../guards/auth.guard';
 
 const routes: Routes = [
   {
     path: 'workspace',
+    canActivate: [AuthGuard],
+
     component: WorkspaceComponent,
   },
   {
     path: 'workspace/:workspaceId',
+    canActivate: [AuthGuard],
+
     component: WorkspaceDetailComponent,
   },
   {
     path: 'create-workspace',
+    canActivate: [AuthGuard],
+
     component: CreateWorkspaceComponent,
   },
   {
     path: 'join-workspace/:workspaceId',
+    canActivate: [AuthGuard],
+
     component: JoinWorkspaceComponent,
   },
 ];
