@@ -16,6 +16,9 @@ import { catchError, map, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { QuillEditorComponent } from 'ngx-quill';
 
+import Swal from 'sweetalert2';
+import { showConfirmation } from '../../shared/confirmation.shared';
+
 interface User {
   id: number;
   name: string;
@@ -161,6 +164,28 @@ export class WorkspaceDetailComponent implements OnInit {
           positionClass: 'toast-top-center',
         });
       },
+    });
+  }
+
+  showWorkspaceRemoveWindow() {
+    showConfirmation(
+      'Are you Sure?',
+      `Do you want to perform this action`,
+      'warning'
+    ).then((result) => {
+      if (result.isConfirmed) this.removeWorkspace();
+      else return;
+    });
+  }
+
+  showRemoveUserWindow(userId: number) {
+    showConfirmation(
+      'Are you Sure?',
+      `Do you want to perform this action`,
+      'warning'
+    ).then((result) => {
+      if (result.isConfirmed) this.removeUserFromWorkspace(userId);
+      else return;
     });
   }
 

@@ -61,12 +61,7 @@
       <h2>Active Users</h2>
     </div>
     <ul class="user-list">
-      <li
-        *ngFor="let user of activeUsers"
-        class="user-item {{ user.role }}"
-        (click)="removeUserFromWorkspace(user.id)"
-      >
-        <!-- <a (click)="removeUserFromWorkspace(user.id)">ffffff</a> -->
+      <li *ngFor="let user of activeUsers" class="user-item {{ user.role }}">
         <div class="user-avatar">
           {{ user.name.slice(0, 2) }}
         </div>
@@ -75,9 +70,16 @@
           <span class="user-email">{{ user.email }}</span>
           <span class="user-role">{{ user.role }}</span>
         </div>
+        <button
+          class="delete-btn"
+          (click)="showRemoveUserWindow(user.id); $event.stopPropagation()"
+          title="Remove user"
+        >
+          &times;
+        </button>
       </li>
     </ul>
-    <button class="save-btn" (click)="removeWorkspace()">
+    <button class="save-btn" (click)="showWorkspaceRemoveWindow()">
       Delete Workspace
     </button>
   </aside>

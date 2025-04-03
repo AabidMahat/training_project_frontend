@@ -8,8 +8,8 @@ import {
 import { AuthService } from '../auth.service';
 import { catchError, map, throwError } from 'rxjs';
 import { User } from '../auth.modal';
-import { ToastrService } from 'ngx-toastr';
 import { Toastr } from '../../shared/toastr.shared';
+import { Router } from '@angular/router';
 
 function passwordMatch(
   controls: AbstractControl
@@ -26,7 +26,11 @@ function passwordMatch(
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent {
-  constructor(private authService: AuthService, private toastr: Toastr) {}
+  constructor(
+    private authService: AuthService,
+    private toastr: Toastr,
+    private router: Router
+  ) {}
 
   registrationForm = new FormGroup(
     {
@@ -61,6 +65,7 @@ export class RegisterComponent {
         .subscribe({
           next: (data) => {
             this.toastr.showToast('success', 'Registration Successful');
+            this.router.navigate(['/loginUser']);
             console.log('Registration Successful:', data);
           },
           error: (err) => {

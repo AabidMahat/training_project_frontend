@@ -11,6 +11,9 @@ import { SocketService } from '../../socket/socket.service';
   styleUrls: ['./workspace.component.scss'],
 })
 export class WorkspaceComponent implements OnInit {
+  isSidebarOpen: boolean = false;
+  searchQuery: string = '';
+
   constructor(
     private router: Router,
     private workspaceService: WorkspaceService,
@@ -49,6 +52,16 @@ export class WorkspaceComponent implements OnInit {
       });
   }
 
+  toggleSidebar(): void {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  searchWorkspaces(): void {
+    // Implement search functionality here
+    console.log('Searching for:', this.searchQuery);
+    // Filter workspaces based on search query
+  }
+
   goToWorkspaceDetail(workspaceId: string): void {
     this.router.navigate(['/workspace', workspaceId]);
   }
@@ -66,5 +79,14 @@ export class WorkspaceComponent implements OnInit {
 
   openWorkspace(workspaceId: string) {
     this.router.navigate(['/workspace', workspaceId]);
+  }
+
+  getOwnerWorkspace() {
+    this.workspaceService
+      .getOwnerWorkspace()
+      .pipe(map((res) => res.data))
+      .subscribe({
+        next: (data) => (this.workspaces = data),
+      });
   }
 }

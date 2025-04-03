@@ -80,4 +80,11 @@ export class WorkspaceService {
       `${this.APIURL}/workspaceUser/removeUser/${workspaceId}/${userId}`
     );
   }
+
+  getOwnerWorkspace() {
+    return this.httpClient.get<{
+      message: string;
+      data: Workspace[];
+    }>(`${this.APIURL}/workspace/ownerWorkspace`);
+  }
 }

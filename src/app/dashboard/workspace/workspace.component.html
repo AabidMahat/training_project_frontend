@@ -1,62 +1,121 @@
-<div class="dashboard-container">
-  <div class="header">
-    <div class="header-left">
-      <h1 class="title">Your Workspaces</h1>
-      <p class="subtitle">Manage and access your collaborative spaces</p>
-    </div>
-    <button class="create-btn" (click)="onCreateWorkspace()">
-      <span class="icon">+</span>
-      <span>Create Workspace</span>
-    </button>
-  </div>
+<div class="dashboard-layout">
+  <!-- Sidebar Toggle Button -->
+  <button class="sidebar-toggle" (click)="toggleSidebar()">
+    <span class="toggle-icon" [ngClass]="{ open: isSidebarOpen }"></span>
+  </button>
 
-  <div class="workspace-grid" *ngIf="workspaces.length > 0">
-    <div
-      class="workspace-card"
-      *ngFor="let workspace of workspaces"
-      (click)="openWorkspace(workspace.id)"
-    >
-      <div
-        class="card-header"
-        [ngStyle]="{ 'background-color': getWorkspaceColor(workspace.id) }"
-      >
-        <div class="workspace-icon">
-          <i class="folder-icon"></i>
-        </div>
+  <!-- Sidebar -->
+  <aside class="sidebar" [ngClass]="{ open: isSidebarOpen }">
+    <div class="sidebar-header">
+      <h2>Navigation</h2>
+    </div>
+
+    <div class="search-container">
+      <div class="search-bar">
+        <i class="search-icon"></i>
+        <input
+          type="text"
+          placeholder="Search workspaces..."
+          [(ngModel)]="searchQuery"
+          (input)="searchWorkspaces()"
+        />
       </div>
-      <div class="card-body">
-        <h3 class="workspace-name">{{ workspace.name }}</h3>
-        <div class="workspace-meta">
-          <span class="active-users">
-            <i class="user-icon"></i>
-            {{ workspace.workspaceUser!.length || 0 }} members
-          </span>
-          <span class="document-count">
-            <i class="document-icon"></i>
-            {{ workspace.document!.length || 0 }} docs
-          </span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul class="nav-list">
+        <li class="nav-item active">
+          <a class="nav-link" (click)="loadWorkspaces()">
+            <i class="nav-icon workspace-icon"></i>
+            <span>Global Workspace</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="getOwnerWorkspace()">
+            <i class="nav-icon workspace-icon"></i>
+            <span>My Workspaces</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon document-icon"></i>
+            <span>My Documents</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn">
+        <i class="logout-icon"></i>
+        <span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <div class="dashboard-container">
+      <div class="header">
+        <div class="header-left">
+          <h1 class="title">Your Workspaces</h1>
+          <p class="subtitle">Manage and access your collaborative spaces</p>
         </div>
+        <button class="create-btn" (click)="onCreateWorkspace()">
+          <span class="icon">+</span>
+          <span>Create Workspace</span>
+        </button>
       </div>
-      <div class="card-footer">
-        <div class="member-indicators">
-          <div class="member-count">
-            {{ workspace.workspaceUser!.length || 0 }} collaborators
+
+      <div class="workspace-grid" *ngIf="workspaces.length > 0">
+        <div
+          class="workspace-card"
+          *ngFor="let workspace of workspaces"
+          (click)="openWorkspace(workspace.id)"
+        >
+          <div
+            class="card-header"
+            [ngStyle]="{ 'background-color': getWorkspaceColor(workspace.id) }"
+          >
+            <div class="workspace-icon">
+              <i class="folder-icon"></i>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3 class="workspace-name">{{ workspace.name }}</h3>
+            <div class="workspace-meta">
+              <span class="active-users">
+                <i class="user-icon"></i>
+                {{ workspace.workspaceUser!.length || 0 }} members
+              </span>
+              <span class="document-count">
+                <i class="document-icon"></i>
+                {{ workspace.document!.length || 0 }} docs
+              </span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="member-indicators">
+              <div class="member-count">
+                {{ workspace.workspaceUser!.length || 0 }} collaborators
+              </div>
+            </div>
+            <span class="view-btn">Open</span>
           </div>
         </div>
-        <span class="view-btn">Open</span>
+      </div>
+
+      <div class="empty-state" *ngIf="workspaces.length === 0">
+        <div class="empty-illustration">
+          <i class="folder-icon"></i>
+        </div>
+        <h2>No workspaces yet</h2>
+        <p>Create your first workspace to start collaborating with your team</p>
+        <button class="create-btn-large">
+          <span class="icon">+</span>
+          <span>Create Workspace</span>
+        </button>
       </div>
     </div>
-  </div>
-
-  <div class="empty-state" *ngIf="workspaces.length === 0">
-    <div class="empty-illustration">
-      <i class="folder-icon"></i>
-    </div>
-    <h2>No workspaces yet</h2>
-    <p>Create your first workspace to start collaborating with your team</p>
-    <button class="create-btn-large">
-      <span class="icon">+</span>
-      <span>Create Workspace</span>
-    </button>
   </div>
 </div>

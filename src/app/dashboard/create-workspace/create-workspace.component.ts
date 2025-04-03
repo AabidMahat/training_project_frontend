@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { WorkspaceService } from '../workspace.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-workspace',
@@ -13,7 +14,10 @@ export class CreateWorkspaceComponent implements OnInit {
   isFormVisible = true;
   previewColor = '#4f46e5';
 
-  constructor(private workspaceService: WorkspaceService) {}
+  constructor(
+    private workspaceService: WorkspaceService,
+    private router: Router
+  ) {}
 
   createWorkspaceForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -46,6 +50,7 @@ export class CreateWorkspaceComponent implements OnInit {
         .subscribe({
           next: (response) => {
             this.hideForm();
+            this.router.navigate(['/workspace']);
           },
           error: (error) => {
             console.error('Error creating workspace:', error);

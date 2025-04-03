@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CookieService } from 'ngx-cookie-service';
 import { Toastr } from '../../shared/toastr.shared';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,8 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private toastr: Toastr,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private router: Router
   ) {}
 
   loginForm = new FormGroup({
@@ -44,6 +46,8 @@ export class LoginComponent {
             this.cookieService.set('jwt', data.token);
 
             this.toastr.showToast('success', 'Login Successful');
+            this.router.navigate(['/workspace']);
+
             console.log('Login Successful:', data);
           },
           error: (err: HttpErrorResponse) => {
