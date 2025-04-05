@@ -1,1 +1,86 @@
-<p>show-documents works!</p>
+<!-- document-display.component.html -->
+<div class="document-dashboard">
+  <div class="dashboard-header">
+    <h1>Document Manager</h1>
+    <div class="search-container">
+      <input
+        type="text"
+        placeholder="Search documents..."
+        class="search-input"
+      />
+      <button class="search-button">
+        <i class="fa fa-search"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="dashboard-content">
+    <div class="document-table-container">
+      <table class="document-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Content Preview</th>
+            <th>Created At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let doc of documents"
+            [class.selected]="selectedDocument?.id === doc.id"
+            (click)="selectDocument(doc)"
+          >
+            <td class="id-column">{{ doc.id }}</td>
+            <td class="title-column">{{ doc.title || "Untitled" }}</td>
+            <td class="content-column">
+              {{
+                doc.content && doc.content.length > 60
+                  ? (doc.content | slice : 0 : 60) + "..."
+                  : doc.content || "No content"
+              }}
+            </td>
+            <td class="date-column">{{ formatDate(doc.createdAt) }}</td>
+            <td class="actions-column">
+              <button
+                class="action-button primary"
+                (click)="selectDocument(doc); $event.stopPropagation()"
+              >
+                View
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="document-detail-container" *ngIf="selectedDocument">
+      <div class="detail-card">
+        <div class="detail-header">
+          <div class="detail-meta">
+            <span class="detail-id">ID: {{ selectedDocument.id }}</span>
+            <span class="detail-created"
+              >Created: {{ formatDate(selectedDocument.createdAt) }}</span
+            >
+          </div>
+          <h2 class="detail-title">
+            {{ selectedDocument.title || "Untitled Document" }}
+          </h2>
+        </div>
+
+        <div class="detail-content">
+          <h3>Content:</h3>
+          <div class="content-box">
+            <p *ngIf="selectedDocument.content">
+              {{ selectedDocument.content }}
+            </p>
+            <p *ngIf="!selectedDocument.content" class="no-content">
+              No content available
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
