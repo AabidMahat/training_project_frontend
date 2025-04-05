@@ -82,9 +82,9 @@ export class WorkspaceService {
   }
 
   getOwnerWorkspace() {
-    return this.httpClient.get<{
+    return this.httpClient.post<{
       message: string;
       data: Workspace[];
-    }>(`${this.APIURL}/workspace/ownerWorkspace`);
+    }>(`${this.APIURL}/workspace/ownerWorkspace`, '');
   }
 }

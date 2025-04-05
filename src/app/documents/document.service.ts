@@ -19,7 +19,7 @@ export class DocumentService {
   constructor(private httpClient: HttpClient) {}
 
   addDocumentToWorkspace(workspaceId: string, data: FormData) {
-    return this.httpClient.patch(
+    return this.httpClient.post(
       `${this.APIURL}/document/addDocument/${workspaceId}`,
       data
     );
@@ -39,5 +39,12 @@ export class DocumentService {
         content,
       }
     );
+  }
+
+  getOwnerDocument() {
+    return this.httpClient.get<{
+      message: string;
+      data: Document[];
+    }>(`${this.APIURL}/document/getOwnerDocument`);
   }
 }

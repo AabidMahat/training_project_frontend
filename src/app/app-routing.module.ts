@@ -5,6 +5,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { AddDocumentComponent } from './documents/add-document/add-document.component';
 import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './guards/auth.guard';
+import { ShowDocumentsComponent } from './documents/show-documents/show-documents.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
 
     component: AddDocumentComponent,
+  },
+  {
+    path: 'show-documents',
+    canActivate: [AuthGuard],
+    component: ShowDocumentsComponent,
   },
   {
     path: 'request',

@@ -44,6 +44,7 @@ export class LoginComponent {
         .subscribe({
           next: (data) => {
             this.cookieService.set('jwt', data.token);
+            this.cookieService.set('role', data.data.role);
 
             this.toastr.showToast('success', 'Login Successful');
             this.router.navigate(['/workspace']);

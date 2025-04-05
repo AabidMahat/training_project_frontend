@@ -26,6 +26,7 @@ import { RequestModule } from './requests/request.module';
 import { ActivityModule } from './activity/activity.module';
 import { HomeComponent } from './home/home.component';
 import { TimeAgoPipe } from './home/time.pipe';
+import { ShowDocumentsComponent } from './documents/show-documents/show-documents.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { TimeAgoPipe } from './home/time.pipe';
     AddDocumentComponent,
     HomeComponent,
     TimeAgoPipe,
+    ShowDocumentsComponent,
   ],
   imports: [
     BrowserAnimationsModule,

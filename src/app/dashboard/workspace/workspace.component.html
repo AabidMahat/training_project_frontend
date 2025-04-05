@@ -16,7 +16,7 @@
         <input
           type="text"
           placeholder="Search workspaces..."
-          [(ngModel)]="searchQuery"
+          #searchQuery
           (input)="searchWorkspaces()"
         />
       </div>
@@ -37,9 +37,31 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a class="nav-link" [routerLink]="['/show-documents']">
             <i class="nav-icon document-icon"></i>
             <span>My Documents</span>
+          </a>
+        </li>
+
+        <ng-container *ngIf="getUserRole() === 'admin'">
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/show-request']">
+              <i class="nav-icon document-icon"></i>
+              <span>See All Request</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/show-activity']">
+              <i class="nav-icon document-icon"></i>
+              <span>Show Activities</span>
+            </a>
+          </li>
+        </ng-container>
+
+        <li class="nav-item">
+          <a class="nav-link" (click)="logOut()">
+            <i class="nav-icon document-icon"></i>
+            <span>Log Out</span>
           </a>
         </li>
       </ul>
@@ -67,54 +89,63 @@
         </button>
       </div>
 
-      <div class="workspace-grid" *ngIf="workspaces.length > 0">
-        <div
-          class="workspace-card"
-          *ngFor="let workspace of workspaces"
-          (click)="openWorkspace(workspace.id)"
-        >
+      <div *ngIf="!isShowDocument">
+        <div class="workspace-grid" *ngIf="filterWorkspaces.length > 0">
           <div
-            class="card-header"
-            [ngStyle]="{ 'background-color': getWorkspaceColor(workspace.id) }"
+            class="workspace-card"
+            *ngFor="let workspace of filterWorkspaces"
+            (click)="openWorkspace(workspace.id)"
           >
-            <div class="workspace-icon">
-              <i class="folder-icon"></i>
-            </div>
-          </div>
-          <div class="card-body">
-            <h3 class="workspace-name">{{ workspace.name }}</h3>
-            <div class="workspace-meta">
-              <span class="active-users">
-                <i class="user-icon"></i>
-                {{ workspace.workspaceUser!.length || 0 }} members
-              </span>
-              <span class="document-count">
-                <i class="document-icon"></i>
-                {{ workspace.document!.length || 0 }} docs
-              </span>
-            </div>
-          </div>
-          <div class="card-footer">
-            <div class="member-indicators">
-              <div class="member-count">
-                {{ workspace.workspaceUser!.length || 0 }} collaborators
+            <div
+              class="card-header"
+              [ngStyle]="{
+                'background-color': getWorkspaceColor(workspace.id)
+              }"
+            >
+              <div class="workspace-icon">
+                <i class="folder-icon"></i>
               </div>
             </div>
-            <span class="view-btn">Open</span>
+            <div class="card-body">
+              <h3 class="workspace-name">{{ workspace.name }}</h3>
+              <div class="workspace-meta">
+                <span class="active-users">
+                  <i class="user-icon"></i>
+                  {{ workspace.workspaceUser!.length || 0 }} members
+                </span>
+                <span class="document-count">
+                  <i class="document-icon"></i>
+                  {{ workspace.document!.length || 0 }} docs
+                </span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="member-indicators">
+                <div class="member-count">
+                  {{ workspace.workspaceUser!.length || 0 }} collaborators
+                </div>
+              </div>
+              <span class="view-btn">Open</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="empty-state" *ngIf="workspaces.length === 0">
-        <div class="empty-illustration">
-          <i class="folder-icon"></i>
+        <div class="empty-state" *ngIf="workspaces.length === 0">
+          <div class="empty-illustration">
+            <i class="folder-icon"></i>
+          </div>
+          <h2>No workspaces yet</h2>
+          <p>
+            Create your first workspace to start collaborating with your team
+          </p>
+          <button class="create-btn-large" (click)="onCreateWorkspace()">
+            <span class="icon">+</span>
+            <span>Create Workspace</span>
+          </button>
         </div>
-        <h2>No workspaces yet</h2>
-        <p>Create your first workspace to start collaborating with your team</p>
-        <button class="create-btn-large">
-          <span class="icon">+</span>
-          <span>Create Workspace</span>
-        </button>
+      </div>
+      <div *ngIf="isShowDocument">
+        <h3>Show Document</h3>
       </div>
     </div>
   </div>
