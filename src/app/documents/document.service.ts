@@ -41,10 +41,11 @@ export class DocumentService {
     );
   }
 
-  getOwnerDocument() {
+  getOwnerDocument(userId: number) {
+    console.log({ userId });
     return this.httpClient.get<{
       message: string;
       data: Document[];
-    }>(`${this.APIURL}/document/getOwnerDocument`);
+    }>(`${this.APIURL}/document/getOwnerDocument/${userId}`);
   }
 }

@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DocumentService } from '../document.service';
 import { ToastrService } from 'ngx-toastr';
+import { BackPropogation } from '../../../utils/back-propogation.service';
 
 @Component({
   selector: 'app-add-document',

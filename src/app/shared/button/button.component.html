@@ -1,0 +1,11 @@
+<button
+  [ngClass]="{
+    'create-btn': type === 'create',
+    'update-class': type === 'update',
+    'delete-btn': type === 'delete'
+  }"
+  (click)="action.next(null)"
+>
+  <span class="icon">{{ iconType }}</span>
+  <span>{{ title }}</span>
+</button>

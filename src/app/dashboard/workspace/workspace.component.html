@@ -83,10 +83,16 @@
           <h1 class="title">Your Workspaces</h1>
           <p class="subtitle">Manage and access your collaborative spaces</p>
         </div>
-        <button class="create-btn" (click)="onCreateWorkspace()">
+        <!-- <button class="create-btn" (click)="onCreateWorkspace()">
           <span class="icon">+</span>
           <span>Create Workspace</span>
-        </button>
+        </button> -->
+        <app-button
+          title="Create Workspace"
+          type="create"
+          iconType="+"
+          (action)="onCreateWorkspace()"
+        ></app-button>
       </div>
 
       <div *ngIf="!isShowDocument">
@@ -138,10 +144,17 @@
           <p>
             Create your first workspace to start collaborating with your team
           </p>
-          <button class="create-btn-large" (click)="onCreateWorkspace()">
+          <!-- <button class="create-btn-large" (click)="onCreateWorkspace()">
             <span class="icon">+</span>
             <span>Create Workspace</span>
-          </button>
+          </button> -->
+
+          <app-button
+            title="Create Workspace"
+            type="create"
+            iconType="+"
+            (action)="onCreateWorkspace()"
+          ></app-button>
         </div>
       </div>
       <div *ngIf="isShowDocument">

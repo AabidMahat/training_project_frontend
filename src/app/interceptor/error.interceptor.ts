@@ -20,7 +20,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         console.log(error.error);
 
         if (error.error.err) {
-          // this.toastr.error(error.error.err);
+          this.toastr.error(error.error.err);
         } else {
           this.toastr.error(error.error.message);
         }

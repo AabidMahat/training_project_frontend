@@ -27,6 +27,10 @@ import { ActivityModule } from './activity/activity.module';
 import { HomeComponent } from './home/home.component';
 import { TimeAgoPipe } from './home/time.pipe';
 import { ShowDocumentComponent } from './documents/show-documents/show-documents.component';
+import { ButtonComponent } from './shared/button/button.component';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+
+const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
 @NgModule({
   declarations: [
@@ -54,6 +58,8 @@ import { ShowDocumentComponent } from './documents/show-documents/show-documents
     }),
     FormsModule,
     QuillModule.forRoot(),
+
+    SocketIoModule.forRoot(config),
   ],
   providers: [
     CookieService,

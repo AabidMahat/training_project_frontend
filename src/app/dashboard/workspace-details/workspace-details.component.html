@@ -4,12 +4,19 @@
   <header class="dashboard-header">
     <h1 class="workspace-title">{{ workspaceName }}</h1>
 
-    <button
+    <!-- <button
       class="join-btn"
       (click)="isUserPresent() ? addDocument() : joinWorkspace()"
     >
       {{ isUserPresent() ? "Add Doucment" : "Join Workspace" }}
-    </button>
+    </button> -->
+
+    <app-button
+      (action)="isUserPresent() ? addDocument() : joinWorkspace()"
+      [title]="isUserPresent() ? 'Add Doucment' : 'Join Workspace'"
+      iconType="+"
+      type="create"
+    ></app-button>
   </header>
 
   <!-- Main Content with Document Cards (Grid Area 2) -->
@@ -45,7 +52,14 @@
           [(ngModel)]="selectedDocument.content"
           #quillEditor
         ></quill-editor>
-        <button class="save-btn" (click)="updateDocument()">Save</button>
+        <!-- <button class="save-btn" (click)="updateDocument()">Save</button> -->
+        <br /><br />
+        <app-button
+          (action)="updateDocument()"
+          title="Save"
+          type="create"
+          iconType="+"
+        ></app-button>
       </ng-template>
     </section>
 
@@ -79,8 +93,14 @@
         </button>
       </li>
     </ul>
-    <button class="save-btn" (click)="showWorkspaceRemoveWindow()">
+    <!-- <button class="save-btn" (click)="showWorkspaceRemoveWindow()">
       Delete Workspace
-    </button>
+    </button> -->
+    <app-button
+      (action)="showWorkspaceRemoveWindow()"
+      title="Delete Workspace"
+      type="delete"
+      iconType=""
+    ></app-button>
   </aside>
 </div>

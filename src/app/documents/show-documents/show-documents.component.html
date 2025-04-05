@@ -7,6 +7,7 @@
         type="text"
         placeholder="Search documents..."
         class="search-input"
+        #searchDocument
       />
       <button class="search-button">
         <i class="fa fa-search"></i>
@@ -28,7 +29,7 @@
         </thead>
         <tbody>
           <tr
-            *ngFor="let doc of documents"
+            *ngFor="let doc of filterDocument"
             [class.selected]="selectedDocument?.id === doc.id"
             (click)="selectDocument(doc)"
           >

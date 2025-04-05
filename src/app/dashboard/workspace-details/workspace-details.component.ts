@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Workspace } from './../workspace.modal';
 // dashboard.component.ts
 import {
@@ -12,12 +13,14 @@ import { WorkspaceData, WorkspaceService } from '../workspace.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { DocumentService, Document } from '../../documents/document.service';
-import { catchError, map, throwError } from 'rxjs';
+import { catchError, debounceTime, fromEvent, map, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { QuillEditorComponent } from 'ngx-quill';
 
 import Swal from 'sweetalert2';
 import { showConfirmation } from '../../shared/confirmation.shared';
+import { SocketService } from '../../socket/socket.service';
+import { Toastr } from '../../shared/toastr.shared';
 
 interface User {
   id: number;
@@ -38,7 +41,8 @@ export class WorkspaceDetailComponent implements OnInit {
     private router: Router,
     private activateRoute: ActivatedRoute,
     private cookieService: CookieService,
-    private toastr: ToastrService
+    private toastr: Toastr,
+    private socketService: SocketService
   ) {}
   workspaceName: string = 'My Workspace';
   selectedDocument: Partial<Document> | null = null;
@@ -49,6 +53,8 @@ export class WorkspaceDetailComponent implements OnInit {
   @ViewChild('quillEditor') editor!: QuillEditorComponent;
 
   ngOnInit(): void {
+
+    this.getRealtimeDocumentUpdate();
     const workspaceId = this.activateRoute.snapshot.paramMap.get('workspaceId');
 
     this.getUserByWorkspace(workspaceId!);
@@ -73,6 +79,29 @@ export class WorkspaceDetailComponent implements OnInit {
         },
         error: (err) => console.log(err),
       });
+  }
+
+  getRealtimeDocumentUpdate() {
+    this.socketService.getDocumentUpdates().subscribe({
+      next: (updates: any) => {
+        if (
+          this.selectedDocument &&
+          this.selectedDocument.id === updates.documentId
+        ) {
+          console.log(updates);
+
+          this.selectedDocument.content = updates.content;
+        }
+
+        const index = this.documents?.findIndex(
+          (doc) => doc.id === updates.documentId
+        ) as number;
+
+        if (index !== -1) {
+          this.documents![index].content = updates.content;
+        }
+      },
+    });
   }
 
   isUserPresent(): boolean {
@@ -109,10 +138,13 @@ export class WorkspaceDetailComponent implements OnInit {
   }
 
   joinWorkspace(): void {
+    const token: any = jwtDecode(this.cookieService.get('jwt'));
     this.isUserPresent();
     const workspaceId = this.activateRoute.snapshot.paramMap.get('workspaceId');
     console.log('Join workspace clicked');
     this.router.navigate(['/join-workspace', workspaceId]);
+
+    this.socketService.joinWorkspace(this.workspaceData?.id!, token.id);
     // Implement joining workspace functionality
   }
 
@@ -126,25 +158,45 @@ export class WorkspaceDetailComponent implements OnInit {
     // this.selectedDocument = { ...document };
     this.documentService
       .getDocumentById(document.id!)
-      .pipe(map((res) => res.data))
+      .pipe(
+        map((res) => res.data),
+        catchError((err: HttpErrorResponse) =>
+          throwError(() => new Error(err.error))
+        )
+      )
       .subscribe({
         next: (data) => {
-          this.toastr.success('Document Fetched');
+          this.toastr.showToast('success', 'Document Fetched');
           this.selectedDocument = data;
         },
+        error: (err) => {},
       });
   }
 
+
+
+
   updateDocument() {
+    const token: any = jwtDecode(this.cookieService.get('jwt'));
     console.log(this.selectedDocument?.content);
     const plainText = this.editor.quillEditor.getText();
+
+
+    fromEvent(this.editor,'input').pipe(debounceTime(200)).subscribe({
+      
+    })
+
     this.documentService
       .updateDocument(this.selectedDocument?.id!, plainText)
       .subscribe({
-        next: () =>
-          this.toastr.success('Document Updated', '', {
-            positionClass: 'toast-top-center',
-          }),
+        next: () => {
+          this.socketService.editDocument(
+            this.selectedDocument?.id + '',
+            plainText,
+            token.id
+          );
+          this.toastr.showToast('success', 'Document Updated');
+        },
       });
   }
 
@@ -153,16 +205,12 @@ export class WorkspaceDetailComponent implements OnInit {
 
     this.workspaceService.removeWorkspace(workspaceId!).subscribe({
       next: () => {
-        this.toastr.success('Workspace Removed', '', {
-          positionClass: 'toast-top-center',
-        });
+        this.toastr.showToast('success', 'Workspace Removed');
         this.router.navigate(['/workspace']);
       },
 
       error: (err) => {
-        this.toastr.error(err, '', {
-          positionClass: 'toast-top-center',
-        });
+        this.toastr.showToast('error', err);
       },
     });
   }
@@ -195,16 +243,12 @@ export class WorkspaceDetailComponent implements OnInit {
 
     this.workspaceService.removeUser(workspaceId!, userId).subscribe({
       next: () => {
-        this.toastr.success('User Removed', '', {
-          positionClass: 'toast-top-center',
-        });
+        this.toastr.showToast('success', 'User Removed');
         this.router.navigate(['/workspace']);
       },
 
       error: (err) => {
-        this.toastr.error(err, '', {
-          positionClass: 'toast-top-center',
-        });
+        this.toastr.showToast('error', err);
       },
     });
   }

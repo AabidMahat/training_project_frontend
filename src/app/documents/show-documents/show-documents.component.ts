@@ -1,6 +1,11 @@
+import { debounceTime } from 'rxjs';
 // document-list.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { DocumentService } from '../document.service';
+import { fromEvent, map } from 'rxjs';
+import { CookieService } from 'ngx-cookie-service';
+import { jwtDecode } from 'jwt-decode';
 
 interface Document {
   id: number;
@@ -20,44 +25,59 @@ interface Document {
 })
 export class ShowDocumentComponent implements OnInit {
   documents: Document[] = [];
+  filterDocument: Document[] = [];
   selectedDocument: Document | null = null;
 
-  constructor(private datePipe: DatePipe) {}
+  constructor(
+    private datePipe: DatePipe,
+    private documentService: DocumentService,
+    private cookieService: CookieService
+  ) {}
+
+  @ViewChild('searchDocument', { static: true }) seachDocument!: ElementRef;
 
   ngOnInit(): void {
-    // Mock data - replace with your actual data fetching logic
-    this.documents = [
-      {
-        id: 1,
-        title: 'Annual Report',
-        content: 'This document contains the annual financial report for 2024.',
-        documentUrl: 'https://example.com/documents/1',
-        document: null,
-        createdAt: new Date('2024-03-15'),
-        updatedAt: new Date('2024-03-20'),
-      },
-      {
-        id: 2,
-        title: 'Project Proposal',
-        content: 'Proposal for the new client project starting in May.',
-        documentUrl: 'https://example.com/documents/2',
-        document: null,
-        createdAt: new Date('2024-04-01'),
-        updatedAt: new Date('2024-04-01'),
-      },
-    ];
+    this.documentService
+      .getOwnerDocument(this.getUserId())
+      .pipe()
+      .subscribe({
+        next: (data) => {
+          console.log(data);
 
-    // Select first document by default
-    if (this.documents.length > 0) {
-      this.selectedDocument = this.documents[0];
-    }
+          this.documents = data.data;
+          this.filterDocument = this.documents;
+        },
+      });
+    this.searchDocumentData();
   }
 
   selectDocument(doc: Document): void {
     this.selectedDocument = doc;
   }
 
+  getUserId(): any {
+    const token = this.cookieService.get('jwt');
+    const tokenData: any = jwtDecode(token);
+    return tokenData.id;
+  }
   formatDate(date: Date): string {
     return this.datePipe.transform(date, 'MMM d, yyyy') || '';
+  }
+
+  searchDocumentData() {
+    fromEvent(this.seachDocument.nativeElement, 'input')
+      .pipe(
+        debounceTime(300),
+        map((event: any) => event.target.value)
+      )
+      .subscribe({
+        next: (search: string) => {
+          console.log(search);
+
+          this.filterDocument = this.documents.filter((document) =>
+            document.title?.toLowerCase()?.includes(search.toLowerCase())
+          );
+        },
+      });
   }
 }

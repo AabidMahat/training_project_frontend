@@ -6,7 +6,6 @@ import { Workspace } from '../workspace.modal';
 import { Document, DocumentService } from '../../documents/document.service';
 import { Toastr } from '../../shared/toastr.shared';
 import { AuthService } from '../../auth/auth.service';
-import { jwtDecode } from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({
@@ -115,24 +114,6 @@ export class WorkspaceComponent implements OnInit {
         next: (data) => {
           this.isShowDocument = false;
           this.workspaces = data;
-        },
-      });
-  }
-
-  getOwnerDocument() {
-    this.documentService
-      .getOwnerDocument()
-      .pipe(map((res) => res.data))
-      .subscribe({
-        next: (data) => {
-          this.documents = data;
-          console.log(data);
-          this.isShowDocument = true;
-        },
-        error: (err) => {
-          console.log(err);
-
-          this.toastr.showToast('error', 'No Document Found');
         },
       });
   }

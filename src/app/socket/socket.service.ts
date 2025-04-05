@@ -6,8 +6,8 @@ import { Socket } from 'ngx-socket-io';
 export class SocketService {
   constructor(private socket: Socket) {}
 
-  joinDocument(documentId: string, userId: string) {
-    this.socket.emit('joinDocument', { documentId, userId });
+  joinWorkspace(workspaceId: string, userId: string) {
+    this.socket.emit('joinWorkspace', { workspaceId, userId });
   }
 
   editDocument(documentId: string, content: string, userId: string) {

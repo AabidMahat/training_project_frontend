@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { QuillModule } from 'ngx-quill';
 import { WorkspaceRoutingModule } from './workspace.routing';
+import { ButtonComponent } from '../shared/button/button.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { WorkspaceRoutingModule } from './workspace.routing';
     JoinWorkspaceComponent,
     WorkspaceComponent,
     WorkspaceDetailComponent,
+    ButtonComponent,
   ],
   imports: [
     WorkspaceRoutingModule,
