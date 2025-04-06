@@ -2,10 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RegisterComponent } from './auth/register/register.component';
 import { LoginComponent } from './auth/login/login.component';
-import { AddDocumentComponent } from './documents/add-document/add-document.component';
 import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './guards/auth.guard';
-import { ShowDocumentComponent } from './documents/show-documents/show-documents.component';
 
 const routes: Routes = [
   {
@@ -27,15 +25,9 @@ const routes: Routes = [
       import('./dashboard/workspace.module').then((m) => m.WorkspaceModule),
   },
   {
-    path: 'add-document/:workspaceId',
-    // canActivate: [AuthGuard],
-
-    component: AddDocumentComponent,
-  },
-  {
-    path: 'show-documents',
-    canActivate: [AuthGuard],
-    component: ShowDocumentComponent,
+    path: 'documents',
+    loadChildren: () =>
+      import('./documents/document.module').then((m) => m.DocumentModule),
   },
   {
     path: 'request',

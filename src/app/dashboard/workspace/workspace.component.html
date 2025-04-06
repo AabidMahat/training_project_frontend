@@ -44,35 +44,27 @@
         </li>
 
         <ng-container *ngIf="getUserRole() === 'admin'">
-          <li class="nav-item">
+          <li class="nav-item admin-nav-item">
             <a class="nav-link" [routerLink]="['/show-request']">
               <i class="nav-icon document-icon"></i>
               <span>See All Request</span>
             </a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item admin-nav-item">
             <a class="nav-link" [routerLink]="['/show-activity']">
               <i class="nav-icon document-icon"></i>
               <span>Show Activities</span>
             </a>
           </li>
         </ng-container>
-
-        <li class="nav-item">
-          <a class="nav-link" (click)="logOut()">
-            <i class="nav-icon document-icon"></i>
-            <span>Log Out</span>
-          </a>
-        </li>
       </ul>
+      <div class="sidebar-footer">
+        <button class="logout-btn" (click)="logOut()">
+          <i class="logout-icon"></i>
+          <span>Logout</span>
+        </button>
+      </div>
     </nav>
-
-    <div class="sidebar-footer">
-      <button class="logout-btn">
-        <i class="logout-icon"></i>
-        <span>Logout</span>
-      </button>
-    </div>
   </aside>
 
   <!-- Main Content Area -->
@@ -136,7 +128,7 @@
           </div>
         </div>
 
-        <div class="empty-state" *ngIf="workspaces.length === 0">
+        <div class="empty-state" *ngIf="filterWorkspaces.length === 0">
           <div class="empty-illustration">
             <i class="folder-icon"></i>
           </div>

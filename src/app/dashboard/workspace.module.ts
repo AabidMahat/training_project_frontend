@@ -11,6 +11,7 @@ import { DatePipe } from '@angular/common';
 import { QuillModule } from 'ngx-quill';
 import { WorkspaceRoutingModule } from './workspace.routing';
 import { ButtonComponent } from '../shared/button/button.component';
+import { UpdateWorkspaceComponent } from './update-workspace/update-workspace.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { ButtonComponent } from '../shared/button/button.component';
     WorkspaceComponent,
     WorkspaceDetailComponent,
     ButtonComponent,
+    UpdateWorkspaceComponent,
   ],
   imports: [
     WorkspaceRoutingModule,

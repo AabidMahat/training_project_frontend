@@ -54,6 +54,18 @@ $transition-standard: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     margin: 0;
   }
 
+  .action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px; // Controls spacing between buttons
+
+    app-button {
+      // This ensures each button component is aligned properly
+      display: inline-block;
+    }
+  }
+
+  // Keeping your original button styles for reference
   .join-btn {
     background-color: $accent-color;
     color: white;
@@ -253,7 +265,6 @@ $transition-standard: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       border-radius: 12px;
       box-shadow: $shadow-light;
       padding: 20px;
-      cursor: pointer;
       transition: $transition-standard;
       border: 1px solid $border-color;
       display: flex;
@@ -286,6 +297,17 @@ $transition-standard: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         .document-title {
           color: darken($primary-color, 10%);
         }
+
+        .delete-btn {
+          opacity: 1;
+        }
+      }
+
+      .document-content {
+        cursor: pointer;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
       }
 
       .document-title {
@@ -329,6 +351,40 @@ $transition-standard: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
           display: inline-block;
           margin-right: 4px;
           opacity: 0.7;
+        }
+      }
+
+      // Delete button styling
+      .delete-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: rgba($accent-color, 0.1);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background-color: $accent-color;
+          transform: scale(1.1);
+
+          .delete-icon {
+            color: white;
+          }
+        }
+
+        .delete-icon {
+          font-size: 18px;
+          color: $accent-color;
+          line-height: 1;
+          font-weight: bold;
         }
       }
     }

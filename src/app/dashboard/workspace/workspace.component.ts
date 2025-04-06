@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { WorkspaceService } from '../workspace.service';
 import { catchError, debounceTime, fromEvent, map, throwError } from 'rxjs';
 import { Workspace } from '../workspace.modal';
-import { Document, DocumentService } from '../../documents/document.service';
+import { Document } from '../../documents/document.service';
 import { Toastr } from '../../shared/toastr.shared';
 import { AuthService } from '../../auth/auth.service';
 import { CookieService } from 'ngx-cookie-service';
@@ -20,7 +20,6 @@ export class WorkspaceComponent implements OnInit {
   constructor(
     private router: Router,
     private workspaceService: WorkspaceService,
-    private documentService: DocumentService,
     private toastr: Toastr,
     private authService: AuthService,
     private cookieService: CookieService
@@ -113,7 +112,7 @@ export class WorkspaceComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.isShowDocument = false;
-          this.workspaces = data;
+          this.filterWorkspaces = data;
         },
       });
   }

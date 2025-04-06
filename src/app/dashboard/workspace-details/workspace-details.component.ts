@@ -1,23 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Workspace } from './../workspace.modal';
 // dashboard.component.ts
-import {
-  Component,
-  EventEmitter,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
-import { jwtDecode, JwtPayload } from 'jwt-decode';
+import { Component, OnInit } from '@angular/core';
+import { jwtDecode } from 'jwt-decode';
 import { WorkspaceData, WorkspaceService } from '../workspace.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { DocumentService, Document } from '../../documents/document.service';
-import { catchError, debounceTime, fromEvent, map, throwError } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
-import { QuillEditorComponent } from 'ngx-quill';
+import { catchError, map, throwError } from 'rxjs';
 
-import Swal from 'sweetalert2';
 import { showConfirmation } from '../../shared/confirmation.shared';
 import { SocketService } from '../../socket/socket.service';
 import { Toastr } from '../../shared/toastr.shared';
@@ -50,15 +40,32 @@ export class WorkspaceDetailComponent implements OnInit {
   activeUsers: User[] | undefined = [];
   documents: Partial<Document>[] | undefined = [];
 
-  @ViewChild('quillEditor') editor!: QuillEditorComponent;
+  workspaceId: string | null = '';
+
+  readonlyMode = false;
+
+  // @ViewChild('quillEditor') editor!: QuillEditorComponent;
+
+  editor: any;
+
+  onEditorCreated(quill: any) {
+    this.editor = quill;
+
+    if (this.readonlyMode) {
+      this.editor.enable(false);
+    }
+    this.getRealtimeDocumentUpdate();
+  }
 
   ngOnInit(): void {
+    this.workspaceId = this.activateRoute.snapshot.paramMap.get('workspaceId');
 
-    this.getRealtimeDocumentUpdate();
-    const workspaceId = this.activateRoute.snapshot.paramMap.get('workspaceId');
+    this.getUserByWorkspace(this.workspaceId!);
 
-    this.getUserByWorkspace(workspaceId!);
+    this.getWorkspaceById(this.workspaceId!);
+  }
 
+  getWorkspaceById(workspaceId: string) {
     this.workspaceService
       .getWorkspaceById(workspaceId!)
       .pipe(
@@ -68,7 +75,7 @@ export class WorkspaceDetailComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.workspaceData = data;
-
+          this.workspaceName = data.name;
           this.documents = this.workspaceData?.document.map((data) => ({
             id: data.id,
             title: data.title,
@@ -82,24 +89,33 @@ export class WorkspaceDetailComponent implements OnInit {
   }
 
   getRealtimeDocumentUpdate() {
-    this.socketService.getDocumentUpdates().subscribe({
-      next: (updates: any) => {
-        if (
-          this.selectedDocument &&
-          this.selectedDocument.id === updates.documentId
-        ) {
-          console.log(updates);
+    const token: any = jwtDecode(this.cookieService.get('jwt'));
+    this.readonlyMode = this.getUserRole() === 'viewer';
 
-          this.selectedDocument.content = updates.content;
+    // Emit Changes only if not readonly
+    if (!this.readonlyMode) {
+      this.editor.on(
+        'text-change',
+        (delta: any, oldDelta: any, source: string) => {
+          if (source === 'user') {
+            console.log('User typing', delta);
+            this.socketService.typingUpdate(
+              this.selectedDocument?.id + '',
+              delta,
+              token.id
+            );
+          }
         }
+      );
+    }
 
-        const index = this.documents?.findIndex(
-          (doc) => doc.id === updates.documentId
-        ) as number;
-
-        if (index !== -1) {
-          this.documents![index].content = updates.content;
-        }
+    this.socketService.getLiveTyping().subscribe({
+      next: (delta: any) => {
+        console.log('Live typing', delta);
+        // if (this.editor && !this.editor.hasFocus()) {
+        console.log('Focus on editor to update content');
+        this.editor.updateContents(delta); // Update without disrupting cursor
+        // }
       },
     });
   }
@@ -131,10 +147,13 @@ export class WorkspaceDetailComponent implements OnInit {
   getUserRole() {
     const token: any = jwtDecode(this.cookieService.get('jwt'));
 
-    const role: string = this.activeUsers?.find((user) => user.id === token.id)
-      ?.role!;
+    const user = this.activeUsers?.find((user) => user.id === token.id)!;
 
-    return role;
+    const role = user?.role;
+
+    console.log({ user, role });
+
+    return role?.toLowerCase();
   }
 
   joinWorkspace(): void {
@@ -145,7 +164,6 @@ export class WorkspaceDetailComponent implements OnInit {
     this.router.navigate(['/join-workspace', workspaceId]);
 
     this.socketService.joinWorkspace(this.workspaceData?.id!, token.id);
-    // Implement joining workspace functionality
   }
 
   addDocument() {
@@ -155,7 +173,6 @@ export class WorkspaceDetailComponent implements OnInit {
   }
 
   selectDocument(document: Partial<Document>): void {
-    // this.selectedDocument = { ...document };
     this.documentService
       .getDocumentById(document.id!)
       .pipe(
@@ -166,6 +183,8 @@ export class WorkspaceDetailComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
+          const token: any = jwtDecode(this.cookieService.get('jwt'));
+          this.socketService.joinDocument(data.id + '', token.id + '');
           this.toastr.showToast('success', 'Document Fetched');
           this.selectedDocument = data;
         },
@@ -173,29 +192,22 @@ export class WorkspaceDetailComponent implements OnInit {
       });
   }
 
-
-
-
   updateDocument() {
     const token: any = jwtDecode(this.cookieService.get('jwt'));
     console.log(this.selectedDocument?.content);
-    const plainText = this.editor.quillEditor.getText();
-
-
-    fromEvent(this.editor,'input').pipe(debounceTime(200)).subscribe({
-      
-    })
+    const plainText = this.editor.getText();
 
     this.documentService
       .updateDocument(this.selectedDocument?.id!, plainText)
       .subscribe({
         next: () => {
-          this.socketService.editDocument(
+          this.socketService.saveDocument(
             this.selectedDocument?.id + '',
             plainText,
             token.id
           );
           this.toastr.showToast('success', 'Document Updated');
+          this.getWorkspaceById(this.workspaceId!);
         },
       });
   }
@@ -251,5 +263,11 @@ export class WorkspaceDetailComponent implements OnInit {
         this.toastr.showToast('error', err);
       },
     });
+  }
+
+  deleteDocument(doc: any) {}
+
+  updateWorkspace() {
+    this.router.navigate(['/update-workspace', this.workspaceId]);
   }
 }

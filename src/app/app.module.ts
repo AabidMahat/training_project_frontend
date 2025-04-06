@@ -19,27 +19,19 @@ import { ToastrModule } from 'ngx-toastr';
 import { AuthInterceptor } from './interceptor/auth.interceptor';
 
 import { RouterModule } from '@angular/router';
-import { AddDocumentComponent } from './documents/add-document/add-document.component';
 import { ErrorInterceptor } from './interceptor/error.interceptor';
 import { WorkspaceModule } from './dashboard/workspace.module';
 import { RequestModule } from './requests/request.module';
 import { ActivityModule } from './activity/activity.module';
 import { HomeComponent } from './home/home.component';
 import { TimeAgoPipe } from './home/time.pipe';
-import { ShowDocumentComponent } from './documents/show-documents/show-documents.component';
-import { ButtonComponent } from './shared/button/button.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { DocumentModule } from './documents/document.module';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    AddDocumentComponent,
-    HomeComponent,
-    TimeAgoPipe,
-    ShowDocumentComponent,
-  ],
+  declarations: [AppComponent, HomeComponent, TimeAgoPipe],
   imports: [
     BrowserAnimationsModule,
     RouterModule,
@@ -50,6 +42,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     WorkspaceModule,
     RequestModule,
     ActivityModule,
+    DocumentModule,
 
     ReactiveFormsModule,
     HttpClientModule,

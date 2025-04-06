@@ -1,0 +1,61 @@
+<div class="form-container">
+  <div class="form-header">
+    <h2>Update Workspace</h2>
+    <p class="subtitle">Customize your workspace settings and information</p>
+  </div>
+
+  <form [formGroup]="updateWorkspaceForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="workspaceName">Workspace Name</label>
+      <input
+        type="text"
+        id="workspaceName"
+        formControlName="workspaceName"
+        placeholder="Enter workspace name"
+        [ngClass]="{ 'input-error': f.workspaceName.errors }"
+      />
+      <div *ngIf="f.workspaceName.errors" class="error-message">
+        <span *ngIf="f.workspaceName.errors?.['required']"
+          >Workspace name is required</span
+        >
+        <span *ngIf="f.workspaceName.errors?.['minlength']"
+          >Workspace name must be at least 3 characters</span
+        >
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Short Description</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        placeholder="Enter workspace description"
+        rows="4"
+        [ngClass]="{ 'input-error': f.description.errors }"
+      ></textarea>
+      <div *ngIf="f.description.errors" class="error-message">
+        <span *ngIf="f.description.errors?.['required']"
+          >Description is required</span
+        >
+        <span *ngIf="f.description.errors?.['maxlength']"
+          >Description cannot exceed 500 characters</span
+        >
+      </div>
+    </div>
+
+    <div class="form-group checkbox-group">
+      <div class="checkbox-container">
+        <input type="checkbox" id="isPublic" formControlName="isPublic" />
+        <label for="isPublic">Make workspace public</label>
+      </div>
+      <small>Public workspaces can be viewed by anyone with the link</small>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="cancel()">
+        Cancel
+      </button>
+      <button type="submit" class="btn-primary">Save Changes</button>
+    </div>
+  </form>
+</div>

@@ -477,12 +477,30 @@ $sidebar-item-hover: rgba(79, 70, 229, 0.1);
         overflow: hidden;
         transition: $transition;
 
+        &.admin-nav-item {
+          background-color: rgba($primary-color, 0.1);
+
+          .nav-link {
+            color: $primary-color;
+            font-weight: 500;
+
+            .nav-icon {
+              background-color: $primary-color;
+            }
+          }
+
+          &:hover {
+            background-color: rgba($primary-color, 0.2);
+          }
+        }
+
         &.active {
           background-color: $sidebar-item-hover;
 
           .nav-link {
             color: $primary-color;
             font-weight: 500;
+            cursor: pointer;
 
             .nav-icon {
               background-color: $primary-color;
@@ -503,6 +521,7 @@ $sidebar-item-hover: rgba(79, 70, 229, 0.1);
           text-decoration: none;
           font-size: 0.9rem;
           transition: $transition;
+          cursor: pointer;
 
           .nav-icon {
             width: 18px;
@@ -528,7 +547,11 @@ $sidebar-item-hover: rgba(79, 70, 229, 0.1);
   .sidebar-footer {
     padding-top: 1rem;
     border-top: 1px solid $sidebar-border;
-    margin-top: auto;
+    margin-top: 1rem;
+    position: sticky;
+    bottom: 0;
+    background-color: $sidebar-bg;
+    width: 100%;
 
     .logout-btn {
       display: flex;

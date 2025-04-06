@@ -3,39 +3,45 @@
   <!-- Header (Grid Area 1) -->
   <header class="dashboard-header">
     <h1 class="workspace-title">{{ workspaceName }}</h1>
+    <div *ngIf="isUserPresent()" class="action-buttons">
+      <app-button
+        (action)="isUserPresent() ? addDocument() : joinWorkspace()"
+        [title]="isUserPresent() ? 'Add Doucment' : 'Join Workspace'"
+        iconType="+"
+        type="create"
+      ></app-button>
 
-    <!-- <button
-      class="join-btn"
-      (click)="isUserPresent() ? addDocument() : joinWorkspace()"
-    >
-      {{ isUserPresent() ? "Add Doucment" : "Join Workspace" }}
-    </button> -->
-
-    <app-button
-      (action)="isUserPresent() ? addDocument() : joinWorkspace()"
-      [title]="isUserPresent() ? 'Add Doucment' : 'Join Workspace'"
-      iconType="+"
-      type="create"
-    ></app-button>
+      <app-button
+        (action)="updateWorkspace()"
+        title="Update Workspace"
+        iconType="+"
+        type="create"
+      ></app-button>
+    </div>
   </header>
 
   <!-- Main Content with Document Cards (Grid Area 2) -->
   <main class="main-content">
     <h2>Documents</h2>
     <div class="document-grid">
-      <div
-        *ngFor="let doc of documents"
-        class="document-card"
-        (click)="selectDocument(doc)"
-      >
-        <h3 class="document-title">{{ doc.title }}</h3>
-        <p class="document-description">{{ doc.content }}</p>
-        <p class="document-description">
-          Created At :- {{ doc.createdAt | date }}
-        </p>
-        <p class="document-description">
-          Updated At :- {{ doc.updatedAt | date }}
-        </p>
+      <div *ngFor="let doc of documents" class="document-card">
+        <div class="document-content" (click)="selectDocument(doc)">
+          <h3 class="document-title">{{ doc.title }}</h3>
+          <p class="document-description">{{ doc.content }}</p>
+          <p class="document-description">
+            Created At: {{ doc.createdAt | date }}
+          </p>
+          <p class="document-description">
+            Updated At: {{ doc.updatedAt | date }}
+          </p>
+        </div>
+        <button
+          class="delete-btn"
+          (click)="deleteDocument(doc); $event.stopPropagation()"
+          title="Delete document"
+        >
+          <span class="delete-icon">×</span>
+        </button>
       </div>
     </div>
 
@@ -43,24 +49,26 @@
     <section class="document-detail" *ngIf="selectedDocument">
       <h2>{{ selectedDocument.title }}</h2>
 
-      <p *ngIf="getUserRole() === 'viewer'; else quill">
+      <!-- <p *ngIf="getUserRole() === 'viewer'; else quill">
         {{ selectedDocument.content }}
-      </p>
+      </p> -->
 
-      <ng-template #quill>
-        <quill-editor
-          [(ngModel)]="selectedDocument.content"
-          #quillEditor
-        ></quill-editor>
-        <!-- <button class="save-btn" (click)="updateDocument()">Save</button> -->
-        <br /><br />
-        <app-button
-          (action)="updateDocument()"
-          title="Save"
-          type="create"
-          iconType="+"
-        ></app-button>
-      </ng-template>
+      <!-- <ng-template #quill> -->
+      <quill-editor
+        (onEditorCreated)="onEditorCreated($event)"
+        [readOnly]="readonlyMode"
+        [(ngModel)]="selectedDocument.content"
+        #quillEditor
+      ></quill-editor>
+      <!-- <button class="save-btn" (click)="updateDocument()">Save</button> -->
+      <br /><br />
+      <app-button
+        (action)="updateDocument()"
+        title="Save"
+        type="create"
+        iconType="+"
+      ></app-button>
+      <!-- </ng-template> -->
     </section>
 
     <!-- Placeholder when no document is selected -->
@@ -84,23 +92,28 @@
           <span class="user-email">{{ user.email }}</span>
           <span class="user-role">{{ user.role }}</span>
         </div>
-        <button
-          class="delete-btn"
-          (click)="showRemoveUserWindow(user.id); $event.stopPropagation()"
-          title="Remove user"
-        >
-          &times;
-        </button>
+
+        <div *ngIf="isUserPresent()">
+          <button
+            class="delete-btn"
+            (click)="showRemoveUserWindow(user.id); $event.stopPropagation()"
+            title="Remove user"
+          >
+            &times;
+          </button>
+        </div>
       </li>
     </ul>
     <!-- <button class="save-btn" (click)="showWorkspaceRemoveWindow()">
       Delete Workspace
     </button> -->
-    <app-button
-      (action)="showWorkspaceRemoveWindow()"
-      title="Delete Workspace"
-      type="delete"
-      iconType=""
-    ></app-button>
+    <div *ngIf="isUserPresent()">
+      <app-button
+        (action)="showWorkspaceRemoveWindow()"
+        title="Delete Workspace"
+        type="delete"
+        iconType=""
+      ></app-button>
+    </div>
   </aside>
 </div>
