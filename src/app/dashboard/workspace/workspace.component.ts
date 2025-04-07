@@ -69,6 +69,18 @@ export class WorkspaceComponent implements OnInit {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
+  getWorkspaceDocumentLength() {
+    let activeDocumentCount = 0;
+    this.workspaces.forEach((workspace) => {
+      workspace.document.forEach((doc) => {
+        if (doc.isActive) {
+          activeDocumentCount++;
+        }
+      });
+    });
+    return activeDocumentCount;
+  }
+
   searchWorkspaces(): void {
     console.log('Searching for:', this.searchQuery);
 

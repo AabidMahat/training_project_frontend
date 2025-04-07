@@ -5,9 +5,10 @@ import { RegisterComponent } from './register/register.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
+import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 
 @NgModule({
-  declarations: [LoginComponent, RegisterComponent],
+  declarations: [LoginComponent, RegisterComponent, ForgetPasswordComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -15,6 +16,6 @@ import { BrowserModule } from '@angular/platform-browser';
     RouterModule,
     BrowserModule,
   ],
-  exports: [LoginComponent, RegisterComponent],
+  exports: [LoginComponent, RegisterComponent, ForgetPasswordComponent],
 })
 export class AuthModule {}

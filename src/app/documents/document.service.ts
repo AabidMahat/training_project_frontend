@@ -5,6 +5,8 @@ export interface Document {
   id: number;
   title: string | null;
   content: string | null;
+
+  isActive: boolean | null;
   documentUrl: string;
   document: File | null;
   createdAt: Date;
@@ -47,5 +49,11 @@ export class DocumentService {
       message: string;
       data: Document[];
     }>(`${this.APIURL}/document/getOwnerDocument/${userId}`);
+  }
+
+  deleteDocument(documentId: number, userId: number) {
+    return this.httpClient.delete(
+      `${this.APIURL}/document/${documentId}/${userId}`
+    );
   }
 }

@@ -37,7 +37,7 @@
         </div>
         <button
           class="delete-btn"
-          (click)="deleteDocument(doc); $event.stopPropagation()"
+          (click)="deleteDocument(doc.id!); $event.stopPropagation()"
           title="Delete document"
         >
           <span class="delete-icon">×</span>

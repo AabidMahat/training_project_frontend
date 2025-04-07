@@ -76,13 +76,16 @@ export class WorkspaceDetailComponent implements OnInit {
         next: (data) => {
           this.workspaceData = data;
           this.workspaceName = data.name;
-          this.documents = this.workspaceData?.document.map((data) => ({
-            id: data.id,
-            title: data.title,
-            content: data.content,
-            createdAt: data.createdAt,
-            updatedAt: data.updatedAt,
-          }));
+          this.documents = this.workspaceData?.document
+            .map((data) => ({
+              id: data.id,
+              title: data.title,
+              content: data.content,
+              createdAt: data.createdAt,
+              updatedAt: data.updatedAt,
+              isActive: data.isActive,
+            }))
+            .filter((doc) => doc.isActive);
         },
         error: (err) => console.log(err),
       });
@@ -265,7 +268,15 @@ export class WorkspaceDetailComponent implements OnInit {
     });
   }
 
-  deleteDocument(doc: any) {}
+  deleteDocument(documentId: number) {
+    const token: any = jwtDecode(this.cookieService.get('jwt'));
+    this.documentService.deleteDocument(documentId, token.id).subscribe({
+      next: (data) => {
+        this.toastr.showToast('success', 'Document Deleted Successfully');
+        this.getWorkspaceById(this.workspaceId!);
+      },
+    });
+  }
 
   updateWorkspace() {
     this.router.navigate(['/update-workspace', this.workspaceId]);

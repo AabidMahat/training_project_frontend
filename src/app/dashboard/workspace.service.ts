@@ -87,4 +87,13 @@ export class WorkspaceService {
       data: Workspace[];
     }>(`${this.APIURL}/workspace/ownerWorkspace`, '');
   }
+
+  updateWorkspace(workspaceId: string, name: string) {
+    return this.httpClient.patch(
+      `${this.APIURL}/workspace/update-workspace/${workspaceId}`,
+      {
+        name,
+      }
+    );
+  }
 }

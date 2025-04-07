@@ -5,8 +5,10 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WorkspaceService } from '../workspace.service';
+import { map } from 'rxjs';
+import { Toastr } from '../../shared/toastr.shared';
 
 @Component({
   selector: 'app-update-workspace',
@@ -16,38 +18,55 @@ import { WorkspaceService } from '../workspace.service';
 export class UpdateWorkspaceComponent implements OnInit {
   constructor(
     private workspaceService: WorkspaceService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private toastr: Toastr
   ) {}
+
+  workspaceId: string = '';
+
+  ngOnInit(): void {
+    this.workspaceId =
+      this.activatedRoute.snapshot.paramMap.get('workspaceId')!;
+    this.loadWorkspaceData(this.workspaceId!);
+  }
 
   updateWorkspaceForm = new FormGroup({
     workspaceName: new FormControl('', [
       Validators.required,
       Validators.minLength(3),
     ]),
-    description: new FormControl('', [
-      Validators.required,
-      Validators.maxLength(100),
-    ]),
   });
 
-  ngOnInit(): void {
-    this.loadWorkspaceData();
+  loadWorkspaceData(workspaceId: string): void {
+    this.workspaceService
+      .getWorkspaceById(workspaceId)
+      .pipe(map((res) => res.data))
+      .subscribe({
+        next: (data) => {
+          this.updateWorkspaceForm.controls.workspaceName.setValue(data.name);
+        },
+      });
   }
 
-  // Initialize the form with validators
-
-  // Load existing workspace data
-  loadWorkspaceData(): void {}
-
-  // Getter for easy access to form controls
   get f() {
     return this.updateWorkspaceForm.controls;
   }
 
-  // Submit form
-  onSubmit(): void {}
+  onSubmit(): void {
+    this.workspaceService
+      .updateWorkspace(
+        this.workspaceId,
+        this.updateWorkspaceForm.controls.workspaceName.value!
+      )
+      .subscribe({
+        next: (data) => {
+          this.toastr.showToast('success', 'Data upated successfully');
+          this.router.navigate(['/workspace']);
+        },
+      });
+  }
 
-  // Cancel and go back
   cancel(): void {
     this.router.navigate(['/workspace']);
   }

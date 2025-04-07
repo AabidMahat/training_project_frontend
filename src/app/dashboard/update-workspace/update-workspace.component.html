@@ -12,44 +12,44 @@
         id="workspaceName"
         formControlName="workspaceName"
         placeholder="Enter workspace name"
-        [ngClass]="{ 'input-error': f.workspaceName.errors }"
+        [ngClass]="{
+          'input-error': f.workspaceName.errors && f.workspaceName.touched
+        }"
       />
       <div *ngIf="f.workspaceName.errors" class="error-message">
-        <span *ngIf="f.workspaceName.errors?.['required']"
+        <span
+          *ngIf="f.workspaceName.errors?.['required'] &&  f.workspaceName.touched"
           >Workspace name is required</span
         >
-        <span *ngIf="f.workspaceName.errors?.['minlength']"
+        <span
+          *ngIf="f.workspaceName.errors?.['minlength'] && f.workspaceName.touched"
           >Workspace name must be at least 3 characters</span
         >
       </div>
     </div>
 
-    <div class="form-group">
+    <!-- <div class="form-group">
       <label for="description">Short Description</label>
       <textarea
         id="description"
         formControlName="description"
         placeholder="Enter workspace description"
         rows="4"
-        [ngClass]="{ 'input-error': f.description.errors }"
+        [ngClass]="{
+          'input-error': f.description.errors && f.workspaceName.touched
+        }"
       ></textarea>
       <div *ngIf="f.description.errors" class="error-message">
-        <span *ngIf="f.description.errors?.['required']"
+        <span
+          *ngIf="f.description.errors?.['required'] && f.workspaceName.touched"
           >Description is required</span
         >
-        <span *ngIf="f.description.errors?.['maxlength']"
+        <span
+          *ngIf="f.description.errors?.['maxlength'] && f.workspaceName.touched"
           >Description cannot exceed 500 characters</span
         >
       </div>
-    </div>
-
-    <div class="form-group checkbox-group">
-      <div class="checkbox-container">
-        <input type="checkbox" id="isPublic" formControlName="isPublic" />
-        <label for="isPublic">Make workspace public</label>
-      </div>
-      <small>Public workspaces can be viewed by anyone with the link</small>
-    </div>
+    </div> -->
 
     <div class="form-actions">
       <button type="button" class="btn-secondary" (click)="cancel()">
