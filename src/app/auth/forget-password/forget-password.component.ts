@@ -1,10 +1,57 @@
-import { Component } from '@angular/core';
+// forgot-password.component.ts
+import { Component, EventEmitter, Output } from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { AuthService } from '../auth.service';
+import { Toastr } from '../../shared/toastr.shared';
 
 @Component({
-  selector: 'app-forget-password',
+  selector: 'app-forgot-password',
   templateUrl: './forget-password.component.html',
-  styleUrl: './forget-password.component.scss'
+  styleUrls: ['./forget-password.component.scss'],
 })
 export class ForgetPasswordComponent {
+  isSubmitted = false;
+  errorMessage = '';
+  successMessage = '';
 
+  @Output() closeForgotPasswordModal = new EventEmitter();
+
+  constructor(private authService: AuthService, private toastr: Toastr) {}
+
+  forgotPasswordForm = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
+  });
+
+  get formControls() {
+    return this.forgotPasswordForm.controls;
+  }
+
+  onSubmit() {
+    this.isSubmitted = true;
+    if (this.forgotPasswordForm.invalid) {
+      return;
+    }
+
+    this.authService.forgotPassword(this.formControls.email.value!).subscribe({
+      next: (data) => {
+        this.toastr.showToast(
+          'success',
+          'Password reset link sent to your email'
+        );
+        this.closeForgotPasswordModal.emit();
+      },
+    });
+  }
+
+  closeModal() {
+    this.forgotPasswordForm.reset();
+    this.isSubmitted = false;
+
+    this.closeForgotPasswordModal.emit();
+  }
 }

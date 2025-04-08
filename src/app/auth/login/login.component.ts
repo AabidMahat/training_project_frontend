@@ -73,6 +73,14 @@ export class LoginComponent {
   showForgetPassword() {
     console.log(this.forgetPasswordContainer);
     this.forgetPasswordContainer.clear();
-    this.forgetPasswordContainer.createComponent(ForgetPasswordComponent);
+    const containerRef = this.forgetPasswordContainer.createComponent(
+      ForgetPasswordComponent
+    );
+
+    containerRef.instance.closeForgotPasswordModal.subscribe({
+      next: () => {
+        this.forgetPasswordContainer.clear();
+      },
+    });
   }
 }
