@@ -21,11 +21,6 @@
           <option value="add">Add</option>
         </select>
       </div>
-      <div class="date-filter">
-        <input type="date" [(ngModel)]="startDate" />
-        <span class="date-separator">to</span>
-        <input type="date" [(ngModel)]="endDate" />
-      </div>
     </div>
   </div>
 
@@ -43,7 +38,7 @@
       </thead>
       <tbody>
         <tr
-          *ngFor="let activity of filteredActivities"
+          *ngFor="let activity of paginatedActivities"
           class="activity-row"
           [ngClass]="getActionClass(activity.action)"
         >
@@ -53,10 +48,7 @@
               class="action-badge"
               [ngClass]="getActionClass(activity.action)"
             >
-              <i
-                class="action-icon"
-                [ngClass]="getActionIcon(activity.action)"
-              ></i>
+              <i class="action-icon"></i>
               {{ activity.action }}
             </div>
           </td>
@@ -129,12 +121,12 @@
       {{ filteredActivities.length }} activities
     </div>
     <div class="pagination-buttons">
-      <button [disabled]="currentPage === 1" (click)="prevPage()">
-        <i class="fas fa-chevron-left"></i>
+      <button [disabled]="page === 1" (click)="prevPage()">
+        <p>⬅️</p>
       </button>
-      <span class="page-number">{{ currentPage }}</span>
-      <button [disabled]="currentPage === totalPages" (click)="nextPage()">
-        <i class="fas fa-chevron-right"></i>
+      <span class="page-number">{{ page }}</span>
+      <button [disabled]="page === totalPages" (click)="nextPage()">
+        <p>➡️</p>
       </button>
     </div>
   </div>

@@ -20,14 +20,12 @@ export class ActivityComponent implements OnInit {
   endDate: string = '';
 
   page: number = 1;
-  limit: number = 5;
+  limit: number = 8;
 
   @ViewChild('searchQuery', { static: true }) searchQuery!: ElementRef;
   @ViewChild('actionQuery', { static: true }) actionQuery!: ElementRef;
 
   // Pagination
-  currentPage: number = 1;
-  itemsPerPage: number = 10;
 
   ngOnInit(): void {
     this.loadActivities();
@@ -44,7 +42,7 @@ export class ActivityComponent implements OnInit {
 
   loadActivities(): void {
     this.activityService
-      .getAllActivity(this.page, this.limit)
+      .getAllActivity()
       .pipe(map((res) => res.data))
       .subscribe({
         next: (data) => {
@@ -59,47 +57,6 @@ export class ActivityComponent implements OnInit {
   }
 
   applyFilters(): void {
-    // this.filteredActivities = this.activities.filter((activity) => {
-    //   // Apply search filter
-    //   const searchMatch =
-    //     !this.searchTerm ||
-    //     activity.id.toString().includes(this.searchTerm) ||
-    //     activity.action.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-    //     activity.user.name
-    //       .toLowerCase()
-    //       .includes(this.searchTerm.toLowerCase()) ||
-    //     (activity.document &&
-    //       activity.document.title
-    //         .toLowerCase()
-    //         .includes(this.searchTerm.toLowerCase())) ||
-    //     (activity.workspace &&
-    //       activity.workspace.name
-    //         .toLowerCase()
-    //         .includes(this.searchTerm.toLowerCase()));
-
-    //   // Apply action filter
-    //   const actionMatch =
-    //     this.actionFilter === 'all' ||
-    //     activity.action.toLowerCase() === this.actionFilter.toLowerCase();
-
-    //   // Apply date filter
-    //   const activityDate = new Date(activity.timestamp);
-    //   let dateMatch = true;
-
-    //   if (this.startDate) {
-    //     const startDate = new Date(this.startDate);
-    //     dateMatch = dateMatch && activityDate >= startDate;
-    //   }
-
-    //   if (this.endDate) {
-    //     const endDate = new Date(this.endDate);
-    //     // Set time to end of day
-    //     endDate.setHours(23, 59, 59, 999);
-    //     dateMatch = dateMatch && activityDate <= endDate;
-    //   }
-
-    //   return searchMatch && actionMatch && dateMatch;
-    // });
     fromEvent(this.searchQuery.nativeElement, 'input')
       .pipe(map((event: any) => event.target.value))
       .subscribe({
@@ -127,7 +84,7 @@ export class ActivityComponent implements OnInit {
       });
 
     // Reset pagination when filters change
-    this.currentPage = 1;
+    this.page = 1;
   }
 
   applyActionFilter(): void {
@@ -135,10 +92,10 @@ export class ActivityComponent implements OnInit {
       .pipe(map((event: any) => event.target.value))
       .subscribe({
         next: (value) => {
+          console.log(this.filteredActivities);
+
           this.filteredActivities = this.activities.filter((activity) => {
-            console.log(value.toLowerCase());
             if (value.toLowerCase().includes('all')) {
-              console.log('All activities');
               return true;
             }
             const data = activity.action
@@ -185,18 +142,6 @@ export class ActivityComponent implements OnInit {
     return '';
   }
 
-  // Helper to get icon based on action type
-  getActionIcon(action: string): string {
-    const actionLower = action.toLowerCase();
-    if (actionLower.includes('create')) return 'fas fa-plus';
-    if (actionLower.includes('update') || actionLower.includes('edit'))
-      return 'fas fa-edit';
-    if (actionLower.includes('delete')) return 'fas fa-trash';
-    if (actionLower.includes('save')) return 'fas fa-eye';
-    if (actionLower.includes('add')) return 'fas fa-share-alt';
-    return 'fas fa-cog';
-  }
-
   // Get user initials from name
   getUserInitials(name: string): string {
     return name
@@ -209,37 +154,34 @@ export class ActivityComponent implements OnInit {
 
   // Pagination helpers
   get paginatedActivities(): Activity[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    return this.filteredActivities.slice(
-      startIndex,
-      startIndex + this.itemsPerPage
-    );
+    const startIndex = (this.page - 1) * this.limit;
+    return this.filteredActivities.slice(startIndex, startIndex + this.limit);
   }
 
   get totalPages(): number {
-    return Math.ceil(this.filteredActivities.length / this.itemsPerPage);
+    return Math.ceil(this.filteredActivities.length / this.limit);
   }
 
   get paginationStart(): number {
-    return (this.currentPage - 1) * this.itemsPerPage + 1;
+    return (this.page - 1) * this.limit + 1;
   }
 
   get paginationEnd(): number {
-    const end = this.currentPage * this.itemsPerPage;
+    const end = this.page * this.limit;
     return end > this.filteredActivities.length
       ? this.filteredActivities.length
       : end;
   }
 
   prevPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
+    if (this.page > 1) {
+      this.page--;
     }
   }
 
   nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
+    if (this.page < this.totalPages) {
+      this.page++;
     }
   }
 }

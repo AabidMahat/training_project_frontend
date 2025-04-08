@@ -58,6 +58,11 @@
           >
         </div>
       </div>
+      <div class="label-row">
+        <p class="forgot-password" (click)="showForgetPassword()">
+          Forget Password
+        </p>
+      </div>
 
       <button type="submit" class="login-button" [disabled]="loginForm.invalid">
         Log In
@@ -81,3 +86,5 @@
     </div>
   </div>
 </div>
+
+<div #forgetPassword> </div>

@@ -1,5 +1,5 @@
 // login.component.ts
-import { Component } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { map, catchError, throwError } from 'rxjs';
 import { User } from '../auth.modal';
@@ -9,6 +9,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Toastr } from '../../shared/toastr.shared';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { ForgetPasswordComponent } from '../forget-password/forget-password.component';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +23,9 @@ export class LoginComponent {
     private cookieService: CookieService,
     private router: Router
   ) {}
+
+  @ViewChild('forgetPassword', { read: ViewContainerRef, static: true })
+  forgetPasswordContainer!: ViewContainerRef;
 
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -64,5 +68,11 @@ export class LoginComponent {
   }
   get password() {
     return this.loginForm.get('password');
+  }
+
+  showForgetPassword() {
+    console.log(this.forgetPasswordContainer);
+    this.forgetPasswordContainer.clear();
+    this.forgetPasswordContainer.createComponent(ForgetPasswordComponent);
   }
 }
