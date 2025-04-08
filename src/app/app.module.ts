@@ -27,6 +27,7 @@ import { HomeComponent } from './home/home.component';
 import { TimeAgoPipe } from './home/time.pipe';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { DocumentModule } from './documents/document.module';
+import { ButtonComponent } from './shared/button/button.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 

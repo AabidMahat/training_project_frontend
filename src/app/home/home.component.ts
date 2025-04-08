@@ -1,5 +1,6 @@
 // home.component.ts
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 interface Activity {
   id: number;
@@ -33,14 +34,21 @@ interface Workspace {
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
+  constructor(private router: Router) {}
+
   recentActivities: Activity[] = [];
   workspaces: Workspace[] = [];
-
-  constructor() {}
 
   ngOnInit(): void {
     this.loadRecentActivities();
     this.loadWorkspaces();
+  }
+
+  logIn() {
+    this.router.navigate(['/loginUser']);
+  }
+  register() {
+    this.router.navigate(['/register']);
   }
 
   loadRecentActivities(): void {

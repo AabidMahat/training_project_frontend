@@ -12,6 +12,8 @@ export class AccessRequestsComponent implements OnInit {
   requests: Request[] = [];
   searchTerm: string = '';
   statusFilter: string = 'all';
+  page: number = 1;
+  limit: number = 5;
 
   constructor(
     private requestService: RequestService,
@@ -24,7 +26,7 @@ export class AccessRequestsComponent implements OnInit {
 
   loadRequests(): void {
     this.requestService
-      .showRequest()
+      .showRequest(this.page, this.limit)
       .pipe(map((res) => res.data))
       .subscribe({
         next: (data) => {

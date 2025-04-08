@@ -19,6 +19,9 @@ export class ActivityComponent implements OnInit {
   startDate: string = '';
   endDate: string = '';
 
+  page: number = 1;
+  limit: number = 5;
+
   @ViewChild('searchQuery', { static: true }) searchQuery!: ElementRef;
   @ViewChild('actionQuery', { static: true }) actionQuery!: ElementRef;
 
@@ -41,7 +44,7 @@ export class ActivityComponent implements OnInit {
 
   loadActivities(): void {
     this.activityService
-      .getAllActivity()
+      .getAllActivity(this.page, this.limit)
       .pipe(map((res) => res.data))
       .subscribe({
         next: (data) => {

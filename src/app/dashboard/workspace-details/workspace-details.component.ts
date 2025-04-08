@@ -125,6 +125,8 @@ export class WorkspaceDetailComponent implements OnInit {
 
   isUserPresent(): boolean {
     const token: any = jwtDecode(this.cookieService.get('jwt'));
+    console.log(this.activeUsers!.some((data) => data.id === token.id));
+
     return this.activeUsers!.some((data) => data.id === token.id);
   }
 

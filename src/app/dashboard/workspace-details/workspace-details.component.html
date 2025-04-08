@@ -3,20 +3,21 @@
   <!-- Header (Grid Area 1) -->
   <header class="dashboard-header">
     <h1 class="workspace-title">{{ workspaceName }}</h1>
-    <div *ngIf="isUserPresent()" class="action-buttons">
+    <div class="action-buttons">
       <app-button
         (action)="isUserPresent() ? addDocument() : joinWorkspace()"
         [title]="isUserPresent() ? 'Add Doucment' : 'Join Workspace'"
         iconType="+"
         type="create"
       ></app-button>
-
-      <app-button
-        (action)="updateWorkspace()"
-        title="Update Workspace"
-        iconType="+"
-        type="create"
-      ></app-button>
+      <div *ngIf="isUserPresent()">
+        <app-button
+          (action)="updateWorkspace()"
+          title="Update Workspace"
+          iconType="+"
+          type="create"
+        ></app-button>
+      </div>
     </div>
   </header>
 

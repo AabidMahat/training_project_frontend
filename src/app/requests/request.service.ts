@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 export interface Request {
@@ -20,11 +20,15 @@ export class RequestService {
 
   constructor(private httpCLient: HttpClient) {}
 
-  showRequest() {
+  showRequest(page: number, limit: number) {
     return this.httpCLient.get<{
       message: string;
       data: Request[];
-    }>(`${this.APIURL}/request/showRequest`);
+    }>(`${this.APIURL}/request/showRequest`, {
+      params: new HttpParams()
+        .set('page', page.toString())
+        .set('limit', limit.toString()),
+    });
   }
 
   approveRequest(userId: number, workspaceId: string) {

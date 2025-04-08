@@ -19,12 +19,11 @@ import { UpdateWorkspaceComponent } from './update-workspace/update-workspace.co
     JoinWorkspaceComponent,
     WorkspaceComponent,
     WorkspaceDetailComponent,
-    ButtonComponent,
     UpdateWorkspaceComponent,
+    ButtonComponent,
   ],
   imports: [
     WorkspaceRoutingModule,
-
     ReactiveFormsModule,
     RouterModule,
     BrowserModule,
@@ -38,6 +37,7 @@ import { UpdateWorkspaceComponent } from './update-workspace/update-workspace.co
     JoinWorkspaceComponent,
     WorkspaceComponent,
     WorkspaceDetailComponent,
+    ButtonComponent,
   ],
 })
 export class WorkspaceModule {}
