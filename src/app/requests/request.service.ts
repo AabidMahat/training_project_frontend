@@ -37,4 +37,11 @@ export class RequestService {
       data: Request;
     }>(`${this.APIURL}/request/approve/${workspaceId}/${userId}`, {});
   }
+
+  rejectRequest(userId: number, workspaceId: string) {
+    return this.httpCLient.post<{
+      message: string;
+      data: Request;
+    }>(`${this.APIURL}/request/reject/${workspaceId}/${userId}`, {});
+  }
 }

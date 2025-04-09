@@ -94,18 +94,18 @@ export class AccessRequestsComponent implements OnInit {
   }
 
   rejectRequest(request: Request): void {
-    // this.requestService
-    //   .rejectRequest(request.user.id, request.workspace.id)
-    //   .subscribe({
-    //     next: (data) => {
-    //       request.status = 'rejected';
-    //       this.toastr.success(data.message || 'Request rejected successfully');
-    //     },
-    //     error: (err) => {
-    //       this.toastr.error('Failed to reject request');
-    //       console.error(err);
-    //     },
-    //   });
+    this.requestService
+      .rejectRequest(request.user.id, request.workspace.id)
+      .subscribe({
+        next: (data) => {
+          request.status = 'rejected';
+          this.toastr.success(data.message || 'Request rejected successfully');
+        },
+        error: (err) => {
+          this.toastr.error('Failed to reject request');
+          console.error(err);
+        },
+      });
   }
 
   getInitials(name: string): string {

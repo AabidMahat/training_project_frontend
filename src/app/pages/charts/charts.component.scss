@@ -1,11 +1,336 @@
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Two columns */
-  gap: 20px; /* Spacing between grid items */
+// Variables
+$primary-color: #3357ff;
+$primary-light: lighten($primary-color, 35%);
+$secondary-color: #ff5733;
+$tertiary-color: #33ff57;
+$text-color: #2c3e50;
+$text-light: #6c757d;
+$background-color: #f8f9fa;
+$card-bg-color: #ffffff;
+$shadow-color: rgba(0, 0, 0, 0.1);
+$border-radius: 12px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$transition: all 0.3s ease;
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.grid-item {
-  border: 1px solid #ccc;
-  padding: 10px;
-  background-color: #f9f9f9;
+@mixin card-shadow {
+  box-shadow: 0 4px 12px $shadow-color;
+  transition: $transition;
+
+  &:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+  }
+}
+
+// Global styles
+* {
+  box-sizing: border-box;
+}
+
+// Main Dashboard Container
+.dashboard-container {
+  padding: $spacing-lg;
+  background-color: $background-color;
+  min-height: 100vh;
+  color: $text-color;
+  font-family: "Roboto", "Segoe UI", Arial, sans-serif;
+}
+
+// Dashboard Title
+.dashboard-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: $spacing-lg;
+  color: $text-color;
+  position: relative;
+  padding-bottom: $spacing-sm;
+
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: $primary-color;
+    border-radius: 2px;
+  }
+}
+
+// Stats Row
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Stat Card
+.stat-card {
+  background: $card-bg-color;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  @include card-shadow;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: $primary-color;
+    margin-bottom: $spacing-sm;
+  }
+
+  .stat-label {
+    font-size: 14px;
+    color: $text-light;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// Charts Grid
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-xl;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Chart Card
+.chart-card {
+  background: $card-bg-color;
+  border-radius: $border-radius;
+  overflow: hidden;
+  @include card-shadow;
+}
+
+// Chart Header
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-md;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+  .chart-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    color: $text-color;
+  }
+
+  .chart-actions {
+    display: flex;
+    gap: $spacing-sm;
+  }
+
+  .chart-action-btn {
+    background: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    @include flex-center;
+    color: $text-light;
+    cursor: pointer;
+    transition: $transition;
+
+    &:hover {
+      background: $primary-light;
+      color: $primary-color;
+    }
+
+    i {
+      font-size: 14px;
+    }
+  }
+}
+
+// Chart Container
+.chart-container {
+  padding: $spacing-md;
+  height: 350px;
+
+  @media (max-width: 768px) {
+    height: 300px;
+  }
+
+  // Ensure charts are responsive
+  ::ng-deep highcharts-chart {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// Specific chart styles
+#users-chart {
+  ::ng-deep .highcharts-column-series .highcharts-point {
+    fill: $primary-color;
+    stroke-width: 0;
+  }
+}
+
+#requests-chart {
+  ::ng-deep .highcharts-column-series .highcharts-point {
+    fill: $secondary-color;
+    stroke-width: 0;
+  }
+}
+
+#activity-chart {
+  ::ng-deep .highcharts-pie-series .highcharts-point {
+    stroke-width: 1px;
+    stroke: $card-bg-color;
+  }
+}
+
+#roles-chart {
+  ::ng-deep .highcharts-series-group {
+    .highcharts-series:nth-child(1) .highcharts-point {
+      fill: $primary-color;
+    }
+    .highcharts-series:nth-child(2) .highcharts-point {
+      fill: $secondary-color;
+    }
+    .highcharts-series:nth-child(3) .highcharts-point {
+      fill: $tertiary-color;
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  $dark-bg: #1a1a2e;
+  $dark-card-bg: #16213e;
+  $dark-text: #e5e5e5;
+  $dark-text-light: #b0b0b0;
+
+  .dashboard-container {
+    background-color: $dark-bg;
+    color: $dark-text;
+  }
+
+  .dashboard-title {
+    color: $dark-text;
+  }
+
+  .stat-card,
+  .chart-card {
+    background-color: $dark-card-bg;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .stat-label,
+  .chart-title {
+    color: $dark-text-light;
+  }
+
+  .chart-action-btn {
+    color: $dark-text-light;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: $dark-text;
+    }
+  }
+
+  ::ng-deep .highcharts-background {
+    fill: $dark-card-bg;
+  }
+
+  ::ng-deep .highcharts-title,
+  ::ng-deep .highcharts-axis-labels,
+  ::ng-deep .highcharts-axis-title {
+    fill: $dark-text;
+  }
+
+  ::ng-deep .highcharts-grid-line {
+    stroke: rgba(255, 255, 255, 0.1);
+  }
+
+  ::ng-deep .highcharts-legend-item text {
+    fill: $dark-text;
+  }
+}
+
+// Loading state styles
+.chart-container.loading {
+  position: relative;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 1;
+    @include flex-center;
+  }
+
+  &:after {
+    content: "";
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: $primary-color;
+    z-index: 2;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// Print styles
+@media print {
+  .dashboard-container {
+    padding: 0;
+    background: white;
+  }
+
+  .chart-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+  }
+
+  .chart-actions {
+    display: none;
+  }
 }

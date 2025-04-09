@@ -36,13 +36,19 @@
             Updated At: {{ doc.updatedAt | date }}
           </p>
         </div>
-        <button
-          class="delete-btn"
-          (click)="deleteDocument(doc.id!); $event.stopPropagation()"
-          title="Delete document"
+        <div
+          *ngIf="
+            isUserPresent() && getCurrentUser().role.toLowerCase() !== 'viewer'
+          "
         >
-          <span class="delete-icon">×</span>
-        </button>
+          <button
+            class="delete-btn"
+            (click)="deleteDocument(doc.id!); $event.stopPropagation()"
+            title="Delete document"
+          >
+            <span class="delete-icon">×</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -63,12 +69,14 @@
       ></quill-editor>
       <!-- <button class="save-btn" (click)="updateDocument()">Save</button> -->
       <br /><br />
-      <app-button
-        (action)="updateDocument()"
-        title="Save"
-        type="create"
-        iconType="+"
-      ></app-button>
+      <div *ngIf="getCurrentUser().role.toLowerCase() !== 'viewer'">
+        <app-button
+          (action)="updateDocument()"
+          title="Save"
+          type="create"
+          iconType="+"
+        ></app-button>
+      </div>
       <!-- </ng-template> -->
     </section>
 

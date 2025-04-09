@@ -1,28 +1,104 @@
-<div class="grid-container">
-  <div class="grid-item" id="chart1">
-    <highcharts-chart
-      [Highcharts]="Highcharts"
-      [options]="chartsOption5"
-    ></highcharts-chart>
+<div class="dashboard-container">
+  <h1 class="dashboard-title">Analytics Dashboard</h1>
+
+  <div class="dashboard-stats">
+    <div class="stat-card">
+      <span class="stat-value">{{ getTotalUsers() }}</span>
+      <span class="stat-label">Total Users</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value">{{ getTotalRequests() }}</span>
+      <span class="stat-label">Total Requests</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value">{{ getTotalWorkspaces() }}</span>
+      <span class="stat-label">Workspaces</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value">{{ getTotalActivities() }}</span>
+      <span class="stat-label">Activities</span>
+    </div>
   </div>
 
-  <div class="grid-item" id="chart2">
-    <highcharts-chart
-      [Highcharts]="Highcharts"
-      [options]="chartsOption1"
-    ></highcharts-chart>
-  </div>
-  <div class="grid-item" id="chart3">
-    <highcharts-chart
-      [Highcharts]="Highcharts"
-      [options]="chartsOption2"
-    ></highcharts-chart>
-  </div>
+  <div class="charts-grid">
+    <div class="chart-card" id="users-chart">
+      <div class="chart-header">
+        <h2 class="chart-title">Users per Workspace</h2>
+        <div class="chart-actions">
+          <button class="chart-action-btn" title="Download CSV">
+            <i class="fas fa-download"></i>
+          </button>
+          <button class="chart-action-btn" title="Refresh">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+      </div>
+      <div class="chart-container" id="chart1">
+        <highcharts-chart
+          [Highcharts]="Highcharts"
+          [options]="chartsOption5"
+        ></highcharts-chart>
+      </div>
+    </div>
 
-  <div class="grid-item" id="chart4">
-    <highcharts-chart
-      [Highcharts]="Highcharts"
-      [options]="chartsOption3"
-    ></highcharts-chart>
+    <div class="chart-card" id="requests-chart">
+      <div class="chart-header">
+        <h2 class="chart-title">Requests per Workspace</h2>
+        <div class="chart-actions">
+          <button class="chart-action-btn" title="Download CSV">
+            <i class="fas fa-download"></i>
+          </button>
+          <button class="chart-action-btn" title="Refresh">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+      </div>
+      <div class="chart-container" id="chart2">
+        <highcharts-chart
+          [Highcharts]="Highcharts"
+          [options]="chartsOption1"
+        ></highcharts-chart>
+      </div>
+    </div>
+
+    <div class="chart-card" id="activity-chart">
+      <div class="chart-header">
+        <h2 class="chart-title">Activity Distribution</h2>
+        <div class="chart-actions">
+          <button class="chart-action-btn" title="Download CSV">
+            <i class="fas fa-download"></i>
+          </button>
+          <button class="chart-action-btn" title="Refresh">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+      </div>
+      <div class="chart-container" id="chart3">
+        <highcharts-chart
+          [Highcharts]="Highcharts"
+          [options]="chartsOption2"
+        ></highcharts-chart>
+      </div>
+    </div>
+
+    <div class="chart-card" id="roles-chart">
+      <div class="chart-header">
+        <h2 class="chart-title">User Roles by Workspace</h2>
+        <div class="chart-actions">
+          <button class="chart-action-btn" title="Download CSV">
+            <i class="fas fa-download"></i>
+          </button>
+          <button class="chart-action-btn" title="Refresh">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+      </div>
+      <div class="chart-container" id="chart4">
+        <highcharts-chart
+          [Highcharts]="Highcharts"
+          [options]="chartsOption3"
+        ></highcharts-chart>
+      </div>
+    </div>
   </div>
 </div>

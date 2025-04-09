@@ -1,21 +1,27 @@
-import { AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { ChartService } from './chart.service';
-import { map } from 'rxjs';
+import { map, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-charts',
   templateUrl: './charts.component.html',
   styleUrls: ['./charts.component.scss'],
 })
-export class ChartsComponent implements AfterViewInit {
+export class ChartsComponent implements AfterViewInit, OnDestroy {
   constructor(private chartService: ChartService) {}
-  Highcharts: typeof Highcharts = Highcharts;
-  chartsOption5: Highcharts.Options = {};
-  chartsOption1: Highcharts.Options = {};
 
-  chartsOption2: Highcharts.Options = {};
-  chartsOption3: Highcharts.Options = {};
+  // Highcharts instance
+  Highcharts: typeof Highcharts = Highcharts;
+
+  // Chart options
+  chartsOption5: Highcharts.Options = {}; // Users by Workspace
+  chartsOption1: Highcharts.Options = {}; // Requests by Workspace
+  chartsOption2: Highcharts.Options = {}; // Activity by Category
+  chartsOption3: Highcharts.Options = {}; // User Roles by Workspace
+
+  // Track subscriptions for cleanup
+  private subscriptions: Subscription[] = [];
 
   ngAfterViewInit(): void {
     this.loadUserByWorkspace();
@@ -24,8 +30,13 @@ export class ChartsComponent implements AfterViewInit {
     this.showUserRoleByWorkspace();
   }
 
+  ngOnDestroy(): void {
+    // Clean up subscriptions to prevent memory leaks
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
   loadUserByWorkspace() {
-    this.chartService
+    const subscription = this.chartService
       .getUserByWorkspaceGroup()
       .pipe(map((res) => res.data))
       .subscribe({
@@ -36,12 +47,10 @@ export class ChartsComponent implements AfterViewInit {
             userCount: workspace.user.length,
           }));
 
-          // console.log(workspaceData); // Logs [{ workspaceName: 'Claude AI', userCount: 1 }]
-
           // Set chart options
           this.chartsOption5 = {
             chart: { type: 'column' },
-            title: { text: 'Workspace' },
+            title: { text: 'Users per Workspace' },
             xAxis: {
               min: 0,
               title: { text: 'Workspace' },
@@ -54,88 +63,151 @@ export class ChartsComponent implements AfterViewInit {
               tickInterval: 1,
               allowDecimals: false,
             },
-
             series: [
               {
-                type: 'bar',
+                type: 'column', // Changed from 'bar' to 'column' to match other charts
                 name: 'Users',
                 data: workspaceData.map((item) => item.userCount),
               },
             ],
             colors: ['#3357FF'],
+            credits: {
+              enabled: false, // Remove Highcharts credits
+            },
           };
 
-          // Force redraw if needed
-          if (this.Highcharts && this.chartsOption5) {
-            Highcharts.chart(
-              document.querySelector('#chart1') as HTMLElement,
-              this.chartsOption5
-            );
-          }
+          // Use setTimeout to ensure DOM is ready
+          setTimeout(() => {
+            const chartElement = document.querySelector('#chart1');
+            if (chartElement && this.Highcharts && this.chartsOption5) {
+              Highcharts.chart(chartElement as HTMLElement, this.chartsOption5);
+            }
+          }, 0);
         },
-        error: (err) => console.error('Error fetching data:', err),
+        error: (err) => console.error('Error fetching user data:', err),
       });
+
+    this.subscriptions.push(subscription);
   }
 
   requestByWorkspace() {
-    this.chartService
+    const subscription = this.chartService
       .getRequestByWorkspaceGroup()
       .pipe(map((res) => res.data))
       .subscribe({
         next: (data) => {
-          // Process data to calculate the number of requests per workspace
-          const seriesData = Object.values(data).map((workspace: any) => ({
-            name: workspace.workspaceName, // Workspace name
-            count: workspace.request.length, // Number of requests for the workspace
-          }));
+          const workspaces = Object.values(data);
+          const categories = workspaces.map((ws: any) => ws.workspaceName);
 
-          // console.log(seriesData); // Logs data for each workspace
+          const approvedData: number[] = [];
+          const rejectedData: number[] = [];
+          const pendingData: number[] = [];
+
+          workspaces.forEach((ws: any) => {
+            const requests = ws.request || [];
+
+            const statusCount = {
+              approved: 0,
+              rejected: 0,
+              pending: 0,
+            };
+
+            requests.forEach((req: any) => {
+              const status = req.requestStatus.toLowerCase();
+              if (statusCount.hasOwnProperty(status)) {
+                const key = status as keyof typeof statusCount;
+                statusCount[key]++;
+              }
+            });
+
+            approvedData.push(statusCount.approved);
+            rejectedData.push(statusCount.rejected);
+            pendingData.push(statusCount.pending);
+          });
 
           this.chartsOption1 = {
-            chart: { type: 'column' }, // Use a column chart for clearer visualization
-            title: { text: 'Requests per Workspace' },
+            chart: {
+              type: 'area',
+            },
+            title: {
+              text: 'Request Status per Workspace',
+            },
             xAxis: {
+              categories,
               title: { text: 'Workspaces' },
-              categories: seriesData.map((workspace) => workspace.name), // Workspace names on X-axis
+              tickmarkPlacement: 'on',
+              startOnTick: false,
+              endOnTick: false,
             },
             yAxis: {
-              title: { text: 'Number of Requests' },
+              title: {
+                text: 'Number of Requests',
+              },
               allowDecimals: false,
+            },
+            tooltip: {
+              shared: true,
+              valueSuffix: ' requests',
+            },
+            plotOptions: {
+              area: {
+                stacking: 'normal',
+                lineColor: '#666666',
+                lineWidth: 1,
+                marker: {
+                  lineWidth: 1,
+                  lineColor: '#666666',
+                },
+              },
             },
             series: [
               {
-                type: 'column',
-                name: 'Number of Requests',
-                data: seriesData.map((workspace) => workspace.count), // Number of requests on Y-axis
+                name: 'Approved',
+                data: approvedData,
+                color: '#28a745',
+                type: 'area',
+              },
+              {
+                name: 'Rejected',
+                data: rejectedData,
+                color: '#dc3545',
+                type: 'area',
+              },
+              {
+                name: 'Pending',
+                data: pendingData,
+                color: '#ffc107',
+                type: 'area',
               },
             ],
-            colors: ['#FF5733', '#33FF57', '#3357FF'], // Optional: Colors for the bars
+            credits: {
+              enabled: false,
+            },
           };
 
-          // Force redraw if needed
-          if (this.Highcharts && this.chartsOption1) {
-            Highcharts.chart(
-              document.querySelector('#chart2') as HTMLElement,
-              this.chartsOption1
-            );
-          }
+          setTimeout(() => {
+            const chartElement = document.querySelector('#chart2');
+            if (chartElement && this.Highcharts && this.chartsOption1) {
+              Highcharts.chart(chartElement as HTMLElement, this.chartsOption1);
+            }
+          }, 0);
         },
-        error: (err) => console.error('Error fetching data:', err),
+        error: (err) => console.error('Error fetching request data:', err),
       });
+
+    this.subscriptions.push(subscription);
   }
 
   showActivityByCategory() {
-    this.chartService
+    const subscription = this.chartService
       .showAllActivity()
       .pipe(map((res) => res.data))
       .subscribe({
         next: (data) => {
-          // console.log(data);
-
           // Define categories and initialize their counts
           const categoryCounts: Record<string, number> = {
             create: 0,
-            edit: 0,
+            update: 0,
             add: 0,
             delete: 0,
             save: 0,
@@ -144,23 +216,19 @@ export class ChartsComponent implements AfterViewInit {
           // Process the data to count occurrences of each action
           data.forEach((activity: any) => {
             const action: string = activity.action.toLowerCase();
-            if (action.split('-')[0] in categoryCounts) {
-              // Check if action is a valid key
-              categoryCounts[action.split('-')[0]]++;
+            const actionType = action.split('-')[0];
+            if (actionType in categoryCounts) {
+              categoryCounts[actionType]++;
             }
           });
 
-          // console.log(categoryCounts); // Logs counts for each category
-
-          // Prepare data for the pie chart
-          const pieData = Object.entries(categoryCounts).map(
-            ([category, count]) => ({
-              name: category,
+          // Prepare data for the pie chart - filter out zero values
+          const pieData = Object.entries(categoryCounts)
+            .filter(([_, count]) => count > 0)
+            .map(([category, count]) => ({
+              name: category.charAt(0).toUpperCase() + category.slice(1), // Capitalize
               y: count,
-            })
-          );
-
-          // console.log(pieData); // Logs data for the pie chart
+            }));
 
           // Configure the chart options
           this.chartsOption2 = {
@@ -170,6 +238,20 @@ export class ChartsComponent implements AfterViewInit {
             title: {
               text: 'Activity Distribution by Category',
             },
+            tooltip: {
+              pointFormat:
+                '{series.name}: <b>{point.percentage:.1f}%</b> ({point.y})',
+            },
+            plotOptions: {
+              pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                  enabled: true,
+                  format: '<b>{point.name}</b>: {point.percentage:.1f}%',
+                },
+              },
+            },
             series: [
               {
                 type: 'pie',
@@ -177,28 +259,34 @@ export class ChartsComponent implements AfterViewInit {
                 data: pieData,
               },
             ],
-            colors: ['#FF5733', '#33FF57', '#3357FF', '#FFD700', '#8E44AD'], // Colors for the slices
+            colors: ['#FF5733', '#33FF57', '#3357FF', '#FFD700', '#8E44AD'],
+            credits: {
+              enabled: false,
+            },
           };
 
-          // Force redraw if needed
-          if (this.Highcharts && this.chartsOption2) {
-            Highcharts.chart(
-              document.querySelector('#chart3') as HTMLElement,
-              this.chartsOption2
-            );
-          }
+          setTimeout(() => {
+            const chartElement = document.querySelector('#chart3');
+            if (chartElement && this.Highcharts && this.chartsOption2) {
+              Highcharts.chart(chartElement as HTMLElement, this.chartsOption2);
+            }
+          }, 0);
         },
-        error: (err) => console.error('Error fetching data:', err),
+        error: (err) => console.error('Error fetching activity data:', err),
       });
+
+    this.subscriptions.push(subscription);
   }
+
   showUserRoleByWorkspace() {
-    this.chartService
+    const subscription = this.chartService
       .getUserByWorkspaceGroup()
       .pipe(map((res) => res.data))
       .subscribe({
-        next: (data: any[]) => {
-          console.log(data);
-
+        next: (data) => {
+          console.log({
+            data,
+          });
           const roleCountsByWorkspace: Record<
             string,
             Record<'admin' | 'viewer' | 'editor', number>
@@ -209,89 +297,181 @@ export class ChartsComponent implements AfterViewInit {
               admin: 0,
               viewer: 0,
               editor: 0,
-            }; // Initialize counts
+            };
 
-            data[workspaceName as any].user.forEach(
-              (user: { role: 'admin' | 'viewer' | 'editor' }) => {
-                const userRole = user.role; // Explicitly define userRole as 'admin' | 'viewer' | 'editor'
+            // Safe access to user array
+            const users = data[workspaceName as any]?.user || [];
 
-                if (userRole in roleCountsByWorkspace[workspaceName]) {
-                  roleCountsByWorkspace[workspaceName][userRole]++; // Safe indexing
-                }
+            users.forEach((user: { role: 'admin' | 'viewer' | 'editor' }) => {
+              const userRole = user.role;
+              if (userRole in roleCountsByWorkspace[workspaceName]) {
+                roleCountsByWorkspace[workspaceName][userRole]++;
               }
-            );
+            });
+          });
+          console.log({
+            roleCountsByWorkspace,
           });
 
-          console.log(roleCountsByWorkspace); // Logs counts of roles per workspace
-
           // Prepare categories (X-axis) and series data
-          const categories = Object.keys(roleCountsByWorkspace); // Workspace names
+          const categories = Object.keys(roleCountsByWorkspace);
+
+          console.log(categories);
+
           const series: Highcharts.SeriesOptionsType[] = [
             {
-              type: 'column',
+              type: 'bar',
               name: 'Admin',
               data: categories.map(
                 (workspace: string) =>
                   roleCountsByWorkspace[workspace]?.admin ?? 0
               ),
+              color: '#FF5733',
             },
             {
-              type: 'column',
+              type: 'bar',
               name: 'Viewer',
               data: categories.map(
                 (workspace: string) =>
                   roleCountsByWorkspace[workspace]?.viewer ?? 0
               ),
+              color: '#33FF57',
             },
             {
-              type: 'column',
+              type: 'bar',
               name: 'Editor',
               data: categories.map(
                 (workspace: string) =>
                   roleCountsByWorkspace[workspace]?.editor ?? 0
               ),
+              color: '#3357FF',
             },
           ];
-
-          console.log(series); // Logs data for the bar chart
 
           // Configure the chart options
           this.chartsOption3 = {
             chart: {
-              type: 'column', // Multi-column chart
+              type: 'bar',
             },
             title: {
               text: 'User Roles by Workspace',
             },
             xAxis: {
-              categories: categories, // Workspace names
+              categories: categories,
               title: { text: 'Workspaces' },
+              crosshair: true,
             },
             yAxis: {
               title: { text: 'Number of Users' },
               allowDecimals: false,
+              min: 0,
             },
-            series: series, // Data for each role
-            colors: ['#FF5733', '#33FF57', '#3357FF'], // Colors for Admin, Viewer, Editor
+            tooltip: {
+              headerFormat:
+                '<span style="font-size:10px">{point.key}</span><table>',
+              pointFormat:
+                '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y}</b></td></tr>',
+              footerFormat: '</table>',
+              shared: true,
+              useHTML: true,
+            },
             plotOptions: {
               column: {
-                grouping: true, // Enables grouped columns
+                pointPadding: 0.2,
+                borderWidth: 0,
+                grouping: true,
                 dataLabels: {
-                  enabled: true, // Show data labels
+                  enabled: true,
                 },
               },
             },
+            series: series,
+            credits: {
+              enabled: false,
+            },
           };
 
-          // Force redraw if needed
-          if (this.Highcharts && this.chartsOption3) {
-            Highcharts.chart(
-              document.querySelector('#chart4') as HTMLElement,
-              this.chartsOption3
-            );
-          }
+          setTimeout(() => {
+            const chartElement = document.querySelector('#chart4');
+            if (chartElement && this.Highcharts && this.chartsOption3) {
+              Highcharts.chart(chartElement as HTMLElement, this.chartsOption3);
+            }
+          }, 0);
         },
-        error: (err) => console.error('Error fetching data:', err),
+        error: (err) => console.error('Error fetching user role data:', err),
       });
+
+    this.subscriptions.push(subscription);
+  }
+
+  // Calculate total users across all workspaces
+  getTotalUsers(): number {
+    let total = 0;
+    try {
+      const series = this.chartsOption5?.series?.[0] as any;
+      if (series?.data) {
+        const userData = series.data as number[];
+        total = userData.reduce(
+          (sum, count) => sum + (typeof count === 'number' ? count : 0),
+          0
+        );
+      }
+    } catch (error) {
+      console.error('Error calculating total users:', error);
+    }
+    return total;
+  }
+
+  // Calculate total requests across all workspaces
+  getTotalRequests(): number {
+    let total = 0;
+    try {
+      const series = this.chartsOption1?.series?.[0] as any;
+
+      if (series?.data) {
+        const requestData = series.data as number[];
+        total = requestData.reduce(
+          (sum, count) => sum + (typeof count === 'number' ? count : 0),
+          0
+        );
+      }
+    } catch (error) {
+      console.error('Error calculating total requests:', error);
+    }
+    return total;
+  }
+
+  // Get total workspaces count
+  getTotalWorkspaces(): number {
+    try {
+      const series = this.chartsOption5?.xAxis as any;
+
+      if (series.categories) {
+        const categories = series.categories as string[];
+        return Array.isArray(categories) ? categories.length : 0;
+      }
+    } catch (error) {
+      console.error('Error calculating total workspaces:', error);
+    }
+    return 0;
+  }
+
+  // Get total activities count
+  getTotalActivities(): number {
+    let total = 0;
+    try {
+      const series = this.chartsOption2?.series?.[0] as any;
+
+      if (series.data) {
+        const activityData = series.data as Array<{
+          y: number;
+        }>;
+        total = activityData.reduce((sum, item) => sum + (item.y || 0), 0);
+      }
+    } catch (error) {
+      console.error('Error calculating total activities:', error);
+    }
+    return total;
   }
 }

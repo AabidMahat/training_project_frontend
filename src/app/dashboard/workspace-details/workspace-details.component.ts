@@ -130,6 +130,13 @@ export class WorkspaceDetailComponent implements OnInit {
     return this.activeUsers!.some((data) => data.id === token.id);
   }
 
+  getCurrentUser() {
+    const token: any = jwtDecode(this.cookieService.get('jwt'));
+    const user = this.activeUsers?.find((user) => user.id === token.id)!;
+    console.log({ user });
+    return user;
+  }
+
   getUserByWorkspace(workspaceId: string) {
     this.workspaceService
       .getUserByWorkspace(workspaceId)
