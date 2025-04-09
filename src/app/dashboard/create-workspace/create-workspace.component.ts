@@ -36,6 +36,7 @@ export class CreateWorkspaceComponent implements OnInit {
   hideForm(): void {
     this.isFormVisible = false;
     this.formClosed.emit();
+    this.router.navigate(['/workspace']);
   }
 
   get name() {
@@ -50,7 +51,6 @@ export class CreateWorkspaceComponent implements OnInit {
         .subscribe({
           next: (response) => {
             this.hideForm();
-            this.router.navigate(['/workspace']);
           },
           error: (error) => {
             console.error('Error creating workspace:', error);

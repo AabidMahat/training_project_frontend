@@ -27,12 +27,13 @@ import { HomeComponent } from './home/home.component';
 import { TimeAgoPipe } from './home/time.pipe';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { DocumentModule } from './documents/document.module';
-import { ButtonComponent } from './shared/button/button.component';
+import { ChartsComponent } from './pages/charts/charts.component';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, TimeAgoPipe],
+  declarations: [AppComponent, HomeComponent, TimeAgoPipe, ChartsComponent],
   imports: [
     BrowserAnimationsModule,
     RouterModule,
@@ -44,6 +45,10 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     RequestModule,
     ActivityModule,
     DocumentModule,
+
+    HighchartsChartModule,
+
+    // AngularFontAwesomeModule,
 
     ReactiveFormsModule,
     HttpClientModule,

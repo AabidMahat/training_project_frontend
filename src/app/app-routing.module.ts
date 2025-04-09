@@ -6,6 +6,7 @@ import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { ForgetPasswordComponent } from './auth/forget-password/forget-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+import { ChartsComponent } from './pages/charts/charts.component';
 
 const routes: Routes = [
   {
@@ -52,6 +53,10 @@ const routes: Routes = [
 
     loadChildren: () =>
       import('./activity/activity.module').then((m) => m.ActivityModule),
+  },
+  {
+    path: 'charts',
+    component: ChartsComponent,
   },
 ];
 
