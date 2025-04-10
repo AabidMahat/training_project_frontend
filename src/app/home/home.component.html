@@ -2,14 +2,64 @@
 <div class="home-container">
   <header class="header">
     <div class="logo-container">
-      <h1>Collaborate</h1>
+      <div class="logo">
+        <svg
+          width="32"
+          height="32"
+          viewBox="0 0 32 32"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M16 4C9.373 4 4 9.373 4 16C4 22.627 9.373 28 16 28C22.627 28 28 22.627 28 16C28 9.373 22.627 4 16 4ZM16 7C19.866 7 23 10.134 23 14C23 17.866 19.866 21 16 21C12.134 21 9 17.866 9 14C9 10.134 12.134 7 16 7Z"
+            fill="url(#paint0_linear)"
+          />
+          <path
+            d="M16 7C12.134 7 9 10.134 9 14C9 17.866 12.134 21 16 21C19.866 21 23 17.866 23 14C23 10.134 19.866 7 16 7ZM16 10C18.209 10 20 11.791 20 14C20 16.209 18.209 18 16 18C13.791 18 12 16.209 12 14C12 11.791 13.791 10 16 10Z"
+            fill="url(#paint1_linear)"
+          />
+          <defs>
+            <linearGradient
+              id="paint0_linear"
+              x1="4"
+              y1="4"
+              x2="28"
+              y2="28"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop offset="0%" stop-color="#4A6BFF" />
+              <stop offset="100%" stop-color="#34C3FF" />
+            </linearGradient>
+            <linearGradient
+              id="paint1_linear"
+              x1="9"
+              y1="7"
+              x2="23"
+              y2="21"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop offset="0%" stop-color="#4A6BFF" />
+              <stop offset="100%" stop-color="#34C3FF" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <h1>Collaborate</h1>
+      </div>
     </div>
+
     <nav class="navigation">
-      <a routerLink="" class="nav-link active">Home</a>
-      <a [routerLink]="['/workspace']" class="nav-link">Workspaces</a>
+      <div class="nav-links">
+        <a routerLink="" class="nav-link active">
+          <span class="material-icons">Home</span>
+        </a>
+        <a [routerLink]="['/workspace']" class="nav-link">
+          <span class="material-icons">Workspace</span>
+        </a>
+      </div>
     </nav>
+
     <div class="user-controls">
-      <div class="user-profile">
+      <div class="auth-buttons">
         <app-button
           title="Log In"
           (action)="logIn()"

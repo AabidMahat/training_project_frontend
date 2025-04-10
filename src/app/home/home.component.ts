@@ -1,5 +1,5 @@
 // home.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 interface Activity {
@@ -33,20 +33,113 @@ interface Workspace {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
   constructor(private router: Router) {}
 
   recentActivities: Activity[] = [];
   workspaces: Workspace[] = [];
+
+  // Track if user is scrolling to optimize parallax effect
+  private ticking = false;
+  private lastScrollY = 0;
 
   ngOnInit(): void {
     this.loadRecentActivities();
     this.loadWorkspaces();
   }
 
+  ngAfterViewInit(): void {
+    // Initial check for elements in view
+    this.checkElementsInView();
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll(event: any): void {
+    this.lastScrollY = window.scrollY;
+
+    if (!this.ticking) {
+      window.requestAnimationFrame(() => {
+        this.updateParallax();
+        this.checkElementsInView();
+        this.ticking = false;
+      });
+
+      this.ticking = true;
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    // Update parallax and element visibility on window resize
+    this.updateParallax();
+    this.checkElementsInView();
+  }
+
+  private updateParallax(): void {
+    // Update hero image parallax effect
+    const heroImage = document.querySelector('.hero-image img') as HTMLElement;
+    if (heroImage) {
+      const scrollPosition = this.lastScrollY;
+      const translateY = scrollPosition * 0.4;
+      heroImage.style.transform = `translate(-40%, calc(-50% + ${translateY}px))`;
+    }
+
+    // Parallax for background elements (subtle effect)
+    const heroSection = document.querySelector('.hero') as HTMLElement;
+    if (heroSection) {
+      const scrollPosition = this.lastScrollY;
+      const translateY = scrollPosition * 0.15; // More subtle movement
+      heroSection.style.backgroundPosition = `0 ${translateY}px`;
+    }
+  }
+
+  private checkElementsInView(): void {
+    // Add animation classes to elements when they come into view
+    const sections = document.querySelectorAll(
+      '.recent-activity, .workspaces, .quick-actions'
+    );
+    const windowHeight = window.innerHeight;
+
+    sections.forEach((section) => {
+      const sectionTop = section.getBoundingClientRect().top;
+
+      // Add class when element is 20% into the viewport
+      if (sectionTop < windowHeight * 0.8) {
+        section.classList.add('in-view');
+      }
+    });
+
+    // Add subtle parallax to individual activity cards
+    const activityCards = document.querySelectorAll('.activity-card');
+    activityCards.forEach((card, index) => {
+      const cardTop = card.getBoundingClientRect().top;
+
+      if (cardTop < windowHeight && cardTop > 0) {
+        const distance = windowHeight - cardTop;
+        const translateY = Math.min(20, distance * 0.05);
+        (card as HTMLElement).style.transform = `translateY(-${translateY}px)`;
+      }
+    });
+
+    // Add subtle parallax to workspace cards
+    const workspaceCards = document.querySelectorAll('.workspace-card');
+    workspaceCards.forEach((card, index) => {
+      const cardTop = card.getBoundingClientRect().top;
+
+      if (cardTop < windowHeight && cardTop > 0) {
+        const distance = windowHeight - cardTop;
+        const scale = 1 + Math.min(0.05, distance * 0.0001);
+        (
+          card as HTMLElement
+        ).style.transform = `translateY(-7px) scale(${scale})`;
+      }
+    });
+  }
+
   logIn() {
     this.router.navigate(['/loginUser']);
   }
+
   register() {
     this.router.navigate(['/register']);
   }
