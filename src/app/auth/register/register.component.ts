@@ -65,7 +65,7 @@ export class RegisterComponent {
         .subscribe({
           next: (data) => {
             this.toastr.showToast('success', 'Registration Successful');
-            this.router.navigate(['/loginUser']);
+            this.router.navigate(['/verify-account']);
             console.log('Registration Successful:', data);
           },
           error: (err) => {

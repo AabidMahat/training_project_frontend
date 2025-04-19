@@ -21,6 +21,7 @@ export class CreateWorkspaceComponent implements OnInit {
 
   createWorkspaceForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    isPrivate: new FormControl(false, [Validators.required]),
   });
 
   ngOnInit(): void {}
@@ -47,7 +48,10 @@ export class CreateWorkspaceComponent implements OnInit {
   onSubmit(): void {
     if (this.createWorkspaceForm.valid) {
       this.workspaceService
-        .createWorkspace(this.createWorkspaceForm.get('name')?.value!)
+        .createWorkspace(
+          this.createWorkspaceForm.get('name')?.value!,
+          this.createWorkspaceForm.controls.isPrivate.value!
+        )
         .subscribe({
           next: (response) => {
             this.hideForm();

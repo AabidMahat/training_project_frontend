@@ -220,6 +220,7 @@ export class WorkspaceDetailComponent implements OnInit {
           );
           this.toastr.showToast('success', 'Document Updated');
           this.getWorkspaceById(this.workspaceId!);
+          this.selectedDocument = null;
         },
       });
   }
@@ -234,7 +235,8 @@ export class WorkspaceDetailComponent implements OnInit {
       },
 
       error: (err) => {
-        this.toastr.showToast('error', err);
+        // this.toastr.showToast('error', err);
+        console.log(err);
       },
     });
   }

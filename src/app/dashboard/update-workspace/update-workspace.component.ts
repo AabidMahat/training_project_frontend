@@ -36,6 +36,7 @@ export class UpdateWorkspaceComponent implements OnInit {
       Validators.required,
       Validators.minLength(3),
     ]),
+    isPrivate: new FormControl(false, [Validators.required]),
   });
 
   loadWorkspaceData(workspaceId: string): void {
@@ -45,6 +46,7 @@ export class UpdateWorkspaceComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.updateWorkspaceForm.controls.workspaceName.setValue(data.name);
+          this.updateWorkspaceForm.controls.isPrivate.setValue(data.isPrivate);
         },
       });
   }
@@ -57,7 +59,8 @@ export class UpdateWorkspaceComponent implements OnInit {
     this.workspaceService
       .updateWorkspace(
         this.workspaceId,
-        this.updateWorkspaceForm.controls.workspaceName.value!
+        this.updateWorkspaceForm.controls.workspaceName.value!,
+        this.updateWorkspaceForm.controls.isPrivate.value!
       )
       .subscribe({
         next: (data) => {

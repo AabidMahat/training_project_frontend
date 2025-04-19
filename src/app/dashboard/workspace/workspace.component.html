@@ -24,7 +24,7 @@
 
     <nav class="sidebar-nav">
       <ul class="nav-list">
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" (click)="loadWorkspaces()">
             <i class="nav-icon workspace-icon"></i>
             <span>Global Workspace</span>
@@ -32,7 +32,7 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" (click)="getOwnerWorkspace()">
-            <i class="nav-icon workspace-icon"></i>
+            <i class="nav-icon workspace-icon" routerLinkActive="active"></i>
             <span>My Workspaces</span>
           </a>
         </li>
@@ -94,7 +94,7 @@
         ></app-button>
       </div>
 
-      <div *ngIf="!isShowDocument">
+      <div>
         <div class="workspace-grid" *ngIf="filterWorkspaces.length > 0">
           <div
             class="workspace-card"
@@ -120,7 +120,8 @@
                 </span>
                 <span class="document-count">
                   <i class="document-icon"></i>
-                  {{ getWorkspaceDocumentLength() || 0 }} docs
+                  <!-- {{ workspace.document.length || 0 }} docs -->
+                  {{ getWorkspaceDocumentLength(workspace.id) || 0 }} docs
                 </span>
               </div>
             </div>
@@ -155,9 +156,6 @@
             (action)="onCreateWorkspace()"
           ></app-button>
         </div>
-      </div>
-      <div *ngIf="isShowDocument">
-        <h3>Show Document</h3>
       </div>
     </div>
   </div>

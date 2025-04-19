@@ -2,20 +2,10 @@ import { debounceTime } from 'rxjs';
 // document-list.component.ts
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { DocumentService } from '../document.service';
+import { Document, DocumentService } from '../document.service';
 import { fromEvent, map } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { jwtDecode } from 'jwt-decode';
-
-interface Document {
-  id: number;
-  title: string | null;
-  content: string | null;
-  documentUrl: string;
-  document: File | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 @Component({
   selector: 'app-document-list',
@@ -62,6 +52,13 @@ export class ShowDocumentComponent implements OnInit {
   }
   formatDate(date: Date): string {
     return this.datePipe.transform(date, 'MMM d, yyyy') || '';
+  }
+
+  getDocumentUrl(documentUrl: string) {
+    return (
+      'http://localhost:3000/uploads/' +
+      documentUrl.replace(/\\/g, '/').split('/uploads/')[1]
+    );
   }
 
   searchDocumentData() {

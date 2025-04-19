@@ -4,7 +4,7 @@ import { ShowDocumentComponent } from './show-documents/show-documents.component
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentRoutingModule } from './document.routing';
-
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 @NgModule({
   declarations: [AddDocumentComponent, ShowDocumentComponent],
   exports: [AddDocumentComponent, ShowDocumentComponent],
@@ -14,6 +14,7 @@ import { DocumentRoutingModule } from './document.routing';
     DocumentRoutingModule,
     ReactiveFormsModule,
     FormsModule,
+    NgxExtendedPdfViewerModule,
   ],
 })
 export class DocumentModule {}

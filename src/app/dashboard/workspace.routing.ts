@@ -6,6 +6,7 @@ import { WorkspaceDetailComponent } from './workspace-details/workspace-details.
 import { WorkspaceComponent } from './workspace/workspace.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { UpdateWorkspaceComponent } from './update-workspace/update-workspace.component';
+import { WorkspaceResolver } from '../guards/workspace-resolver.guard';
 
 const routes: Routes = [
   {
@@ -29,7 +30,9 @@ const routes: Routes = [
   {
     path: 'join-workspace/:workspaceId',
     canActivate: [AuthGuard],
-
+    resolve: {
+      workspaceName: WorkspaceResolver,
+    },
     component: JoinWorkspaceComponent,
   },
   {

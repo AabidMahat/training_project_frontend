@@ -8,6 +8,7 @@ export interface WorkspaceData {
   document: any[];
   workspaceUser: any[];
   name: string;
+  isPrivate: boolean;
 }
 
 export interface JoinData {
@@ -33,12 +34,13 @@ export class WorkspaceService {
     }>(`${this.APIURL}/workspace`);
   }
 
-  createWorkspace(name: string) {
+  createWorkspace(name: string, isPrivate: boolean) {
     return this.httpClient.post<{
       message: string;
       workspace: Workspace;
     }>(`${this.APIURL}/workspace`, {
       name,
+      isPrivate,
     });
   }
 
@@ -88,11 +90,12 @@ export class WorkspaceService {
     }>(`${this.APIURL}/workspace/ownerWorkspace`, '');
   }
 
-  updateWorkspace(workspaceId: string, name: string) {
+  updateWorkspace(workspaceId: string, name: string, isPrivate: boolean) {
     return this.httpClient.patch(
       `${this.APIURL}/workspace/update-workspace/${workspaceId}`,
       {
         name,
+        isPrivate,
       }
     );
   }

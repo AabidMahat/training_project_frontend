@@ -34,7 +34,31 @@ $form-background: white;
       color: $text-color;
     }
 
-    input[type="text"],
+    input[type="text"] {
+      width: 95%;
+      padding: 10px 12px;
+      border: 1px solid $border-color;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: border 0.3s ease;
+      background-color: $form-background;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+      }
+
+      &.ng-invalid.ng-touched {
+        border-color: $error-color;
+      }
+
+      &[readonly] {
+        background-color: $background-color;
+        cursor: not-allowed;
+      }
+    }
+
     select {
       width: 100%;
       padding: 10px 12px;

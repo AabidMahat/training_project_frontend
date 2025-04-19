@@ -1,4 +1,5 @@
 <!-- login.component.html -->
+
 <div class="container">
   <div class="login-card">
     <div class="login-header">
@@ -62,6 +63,7 @@
         <p class="forgot-password" (click)="showForgetPassword()">
           Forget Password
         </p>
+        <p class="forgot-password" (click)="showResendOtp()">Resend Otp</p>
       </div>
 
       <button type="submit" class="login-button" [disabled]="loginForm.invalid">
@@ -88,3 +90,4 @@
 </div>
 
 <div #forgetPassword></div>
+<div #resendOtp></div>

@@ -35,6 +35,11 @@ export class ChartsComponent implements AfterViewInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
+
+  loadActiveDocumentByWorkspace(){
+    const subscription =this.chartService
+  }
+
   loadUserByWorkspace() {
     const subscription = this.chartService
       .getUserByWorkspaceGroup()

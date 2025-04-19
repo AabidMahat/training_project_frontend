@@ -1,11 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RegisterComponent } from './auth/register/register.component';
-import { LoginComponent } from './auth/login/login.component';
+
 import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './guards/auth.guard';
-import { ForgetPasswordComponent } from './auth/forget-password/forget-password.component';
-import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+
 import { ChartsComponent } from './pages/charts/charts.component';
 
 const routes: Routes = [
@@ -14,21 +12,10 @@ const routes: Routes = [
     component: HomeComponent,
   },
   {
-    path: 'register',
-    component: RegisterComponent,
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
   },
-  {
-    path: 'loginUser',
-    component: LoginComponent,
-  },
-  {
-    path: 'forget-password',
-    component: ForgetPasswordComponent,
-  },
-  {
-    path: 'reset-password/:resetToken',
-    component: ResetPasswordComponent,
-  },
+
   {
     path: 'dashboard',
     canLoad: [AuthGuard],

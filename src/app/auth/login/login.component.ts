@@ -10,6 +10,7 @@ import { Toastr } from '../../shared/toastr.shared';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ForgetPasswordComponent } from '../forget-password/forget-password.component';
+import { ResendOtpComponent } from '../resend-otp/resend-otp.component';
 
 @Component({
   selector: 'app-login',
@@ -26,6 +27,9 @@ export class LoginComponent {
 
   @ViewChild('forgetPassword', { read: ViewContainerRef, static: true })
   forgetPasswordContainer!: ViewContainerRef;
+
+  @ViewChild('resendOtp', { static: true, read: ViewContainerRef })
+  resendOtpContainer!: ViewContainerRef;
 
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -56,7 +60,7 @@ export class LoginComponent {
             console.log('Login Successful:', data);
           },
           error: (err: HttpErrorResponse) => {
-            this.toastr.showToast('error', 'Incorrect Email Or Password');
+            // this.toastr.showToast('error', 'Incorrect Email Or Password');
             console.log('Error:', err.error);
           },
         });
@@ -80,6 +84,19 @@ export class LoginComponent {
     containerRef.instance.closeForgotPasswordModal.subscribe({
       next: () => {
         this.forgetPasswordContainer.clear();
+      },
+    });
+  }
+
+  showResendOtp() {
+    this.resendOtpContainer.clear();
+
+    const containerRef =
+      this.resendOtpContainer.createComponent(ResendOtpComponent);
+
+    containerRef.instance.closeOtpForm.subscribe({
+      next: () => {
+        this.resendOtpContainer.clear();
       },
     });
   }

@@ -14,6 +14,7 @@ export class ActivityComponent implements OnInit {
   filteredActivities: Activity[] = [];
 
   // Filters
+
   searchTerm: string = '';
   actionFilter: string = 'all';
   startDate: string = '';

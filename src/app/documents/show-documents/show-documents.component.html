@@ -25,6 +25,7 @@
             <th>Content Preview</th>
             <th>Created At</th>
             <th>Actions</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -51,6 +52,9 @@
                 View
               </button>
             </td>
+            <td>
+              {{ doc.isActive ? "Active" : "Inactive" }}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -65,6 +69,7 @@
               >Created: {{ formatDate(selectedDocument.createdAt) }}</span
             >
           </div>
+
           <h2 class="detail-title">
             {{ selectedDocument.title || "Untitled Document" }}
           </h2>
@@ -76,6 +81,9 @@
             <p *ngIf="selectedDocument.content">
               {{ selectedDocument.content }}
             </p>
+            <ngx-extended-pdf-viewer
+              [src]="getDocumentUrl(selectedDocument.documentUrl)"
+            ></ngx-extended-pdf-viewer>
             <p *ngIf="!selectedDocument.content" class="no-content">
               No content available
             </p>

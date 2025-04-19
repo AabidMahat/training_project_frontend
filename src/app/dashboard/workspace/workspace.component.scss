@@ -490,7 +490,7 @@ $sidebar-item-hover: rgba(79, 70, 229, 0.1);
           }
 
           &:hover {
-            background-color: rgba($primary-color, 0.2);
+            background-color: rgba($primary-color, 0.9);
           }
         }
 
@@ -509,7 +509,7 @@ $sidebar-item-hover: rgba(79, 70, 229, 0.1);
         }
 
         &:hover:not(.active) {
-          background-color: $light-bg;
+          background-color: rgba(176, 226, 176, 0.5);
         }
 
         .nav-link {

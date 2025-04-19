@@ -1,11 +1,6 @@
 // forgot-password.component.ts
 import { Component, EventEmitter, Output } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Toastr } from '../../shared/toastr.shared';
 
@@ -15,10 +10,6 @@ import { Toastr } from '../../shared/toastr.shared';
   styleUrls: ['./forget-password.component.scss'],
 })
 export class ForgetPasswordComponent {
-  isSubmitted = false;
-  errorMessage = '';
-  successMessage = '';
-
   @Output() closeForgotPasswordModal = new EventEmitter();
 
   constructor(private authService: AuthService, private toastr: Toastr) {}
@@ -32,7 +23,6 @@ export class ForgetPasswordComponent {
   }
 
   onSubmit() {
-    this.isSubmitted = true;
     if (this.forgotPasswordForm.invalid) {
       return;
     }
@@ -50,7 +40,6 @@ export class ForgetPasswordComponent {
 
   closeModal() {
     this.forgotPasswordForm.reset();
-    this.isSubmitted = false;
 
     this.closeForgotPasswordModal.emit();
   }

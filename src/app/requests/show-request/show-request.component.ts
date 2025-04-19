@@ -87,7 +87,6 @@ export class AccessRequestsComponent implements OnInit {
           this.toastr.success(data.message || 'Request approved successfully');
         },
         error: (err) => {
-          this.toastr.error('Failed to approve request');
           console.error(err);
         },
       });
@@ -102,7 +101,6 @@ export class AccessRequestsComponent implements OnInit {
           this.toastr.success(data.message || 'Request rejected successfully');
         },
         error: (err) => {
-          this.toastr.error('Failed to reject request');
           console.error(err);
         },
       });

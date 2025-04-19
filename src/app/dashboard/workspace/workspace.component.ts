@@ -15,7 +15,6 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class WorkspaceComponent implements OnInit {
   isSidebarOpen: boolean = false;
-  isShowDocument: boolean = false;
 
   constructor(
     private router: Router,
@@ -56,8 +55,7 @@ export class WorkspaceComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.workspaces = data;
-          this.isShowDocument = false;
+          this.workspaces = data.filter((item) => !item.isPrivate);
           this.filterWorkspaces = this.workspaces;
           console.log('Workspaces loaded:', this.workspaces);
         },
@@ -69,16 +67,13 @@ export class WorkspaceComponent implements OnInit {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
-  getWorkspaceDocumentLength() {
-    let activeDocumentCount = 0;
-    this.workspaces.forEach((workspace) => {
-      workspace.document.forEach((doc) => {
-        if (doc.isActive) {
-          activeDocumentCount++;
-        }
-      });
-    });
-    return activeDocumentCount;
+  getWorkspaceDocumentLength(workspaceId: string) {
+    const workspace = this.workspaces.find((data) => data.id === workspaceId);
+
+    return workspace?.document.reduce(
+      (acc, curr) => acc + (curr.isActive === true ? 1 : 0),
+      0
+    );
   }
 
   searchWorkspaces(): void {
@@ -123,7 +118,9 @@ export class WorkspaceComponent implements OnInit {
       .pipe(map((res) => res.data))
       .subscribe({
         next: (data) => {
-          this.isShowDocument = false;
+          console.log({
+            owner: data,
+          });
           this.filterWorkspaces = data;
         },
       });

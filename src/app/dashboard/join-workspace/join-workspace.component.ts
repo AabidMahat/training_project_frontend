@@ -1,7 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { WorkspaceService } from '../workspace.service';
-import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  Router,
+} from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -9,11 +13,12 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './join-workspace.component.html',
   styleUrl: './join-workspace.component.scss',
 })
-export class JoinWorkspaceComponent {
+export class JoinWorkspaceComponent implements OnInit {
   constructor(
     private workService: WorkspaceService,
     private route: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) {}
   joinWorkspaceForm = new FormGroup({
     workspaceName: new FormControl(''),
@@ -21,6 +26,17 @@ export class JoinWorkspaceComponent {
     requestedRole: new FormControl('', [Validators.required]),
   });
 
+  ngOnInit(): void {
+    this.route.data.subscribe({
+      next: (data: any) => {
+        console.log(data);
+        this.joinWorkspaceForm.controls.workspaceName.setValue(
+          data['workspaceName']
+        );
+      },
+    });
+    // this.joinWorkspaceForm.controls.workspaceName.setValue()
+  }
   onSubmit() {
     const workspaceId = this.route.snapshot.paramMap.get('workspaceId');
     this.workService
@@ -32,6 +48,7 @@ export class JoinWorkspaceComponent {
       .subscribe({
         next: (data) => {
           this.toastr.success('Admin will Approve Your Request');
+          this.router.navigate(['/workspace']);
         },
         error: (err) => {
           this.toastr.error('Failed to join workspace');

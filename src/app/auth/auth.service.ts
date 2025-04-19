@@ -33,7 +33,8 @@ export class AuthService {
   }
 
   logOut() {
-    this.cookieService.deleteAll();
+    this.cookieService.delete('jwt');
+    this.cookieService.delete('role');
     this.router.navigate(['/loginUser']);
   }
 
@@ -51,5 +52,15 @@ export class AuthService {
     return this.httpClient.post(`${this.APIURL}/reset-password/${resetToken}`, {
       password,
     });
+  }
+
+  verifyAccount(otp: string) {
+    return this.httpClient.post(`${this.APIURL}/verify-account`, {
+      otp,
+    });
+  }
+
+  resendOtp(email: string) {
+    return this.httpClient.post(`${this.APIURL}/resend-otp`, { email });
   }
 }

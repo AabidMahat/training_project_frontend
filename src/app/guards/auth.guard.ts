@@ -5,9 +5,11 @@ import {
   CanLoad,
   GuardResult,
   MaybeAsync,
+  Resolve,
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
 

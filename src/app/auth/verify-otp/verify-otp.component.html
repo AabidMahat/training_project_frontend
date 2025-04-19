@@ -1,0 +1,28 @@
+<div class="otp-container">
+  <div class="otp-header">
+    <h2>Verification Code</h2>
+    <p>Enter the 5-digit code sent to your phone</p>
+  </div>
+
+  <form [formGroup]="otpFormGroup" (ngSubmit)="onSubmit()" class="otp-form">
+    <ng-otp-input formControlName="otp" [config]="{ length: 6 }"></ng-otp-input>
+
+    <div
+      *ngIf="
+        otpFormGroup.get('otp')?.invalid && otpFormGroup.get('otp')?.touched
+      "
+      class="error-message"
+    >
+      Please enter a valid verification code
+    </div>
+
+    <button type="submit" class="btn-submit" [disabled]="otpFormGroup.invalid">
+      Verify
+    </button>
+
+    <div class="resend-container">
+      <span class="resend-link">Resend Code</span>
+      <span class="timer">(30s)</span>
+    </div>
+  </form>
+</div>
