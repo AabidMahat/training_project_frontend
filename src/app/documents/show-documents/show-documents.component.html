@@ -23,7 +23,7 @@
             <th>ID</th>
             <th>Title</th>
             <th>Content Preview</th>
-            <th>Created At</th>
+            <th>Created</th>
             <th>Actions</th>
             <th>Status</th>
           </tr>
@@ -43,7 +43,9 @@
                   : doc.content || "No content"
               }}
             </td>
-            <td class="date-column">{{ formatDate(doc.createdAt) }}</td>
+            <td class="date-column">
+              {{ doc.createdAt | formatTime : currentDate }}
+            </td>
             <td class="actions-column">
               <button
                 class="action-button primary"
@@ -60,7 +62,10 @@
       </table>
     </div>
 
-    <div class="document-detail-container" *ngIf="selectedDocument">
+    <div
+      class="document-detail-container"
+      *ngIf="selectedDocument; else noContent"
+    >
       <div class="detail-card">
         <div class="detail-header">
           <div class="detail-meta">
@@ -91,5 +96,10 @@
         </div>
       </div>
     </div>
+    <ng-template #noContent>
+      <div class="no-content">
+        <p>Please Select the Document</p>
+      </div>
+    </ng-template>
   </div>
 </div>

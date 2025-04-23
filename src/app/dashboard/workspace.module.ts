@@ -12,6 +12,8 @@ import { QuillModule } from 'ngx-quill';
 import { WorkspaceRoutingModule } from './workspace.routing';
 import { ButtonComponent } from '../shared/button/button.component';
 import { UpdateWorkspaceComponent } from './update-workspace/update-workspace.component';
+import { FormatTime } from './time-ago.pipe';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { UpdateWorkspaceComponent } from './update-workspace/update-workspace.co
     WorkspaceDetailComponent,
     UpdateWorkspaceComponent,
     ButtonComponent,
+    FormatTime,
   ],
   imports: [
     WorkspaceRoutingModule,
@@ -30,6 +33,9 @@ import { UpdateWorkspaceComponent } from './update-workspace/update-workspace.co
     DatePipe,
     FormsModule,
     QuillModule.forRoot(),
+    NgxSpinnerModule.forRoot({
+      type: 'square-jelly-box',
+    }),
   ],
 
   exports: [
@@ -38,6 +44,7 @@ import { UpdateWorkspaceComponent } from './update-workspace/update-workspace.co
     WorkspaceComponent,
     WorkspaceDetailComponent,
     ButtonComponent,
+    FormatTime,
   ],
 })
 export class WorkspaceModule {}

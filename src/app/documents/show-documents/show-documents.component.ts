@@ -1,4 +1,4 @@
-import { debounceTime } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 // document-list.component.ts
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { DatePipe } from '@angular/common';
@@ -17,6 +17,8 @@ export class ShowDocumentComponent implements OnInit {
   documents: Document[] = [];
   filterDocument: Document[] = [];
   selectedDocument: Document | null = null;
+
+  currentDate: Date = new Date();
 
   constructor(
     private datePipe: DatePipe,
@@ -65,6 +67,7 @@ export class ShowDocumentComponent implements OnInit {
     fromEvent(this.seachDocument.nativeElement, 'input')
       .pipe(
         debounceTime(300),
+        distinctUntilChanged(),
         map((event: any) => event.target.value)
       )
       .subscribe({

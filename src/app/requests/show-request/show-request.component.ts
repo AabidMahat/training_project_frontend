@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Request, RequestService } from '../request.service';
 import { ToastrService } from 'ngx-toastr';
 import { map } from 'rxjs/operators';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-access-requests',
@@ -17,7 +18,8 @@ export class AccessRequestsComponent implements OnInit {
 
   constructor(
     private requestService: RequestService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService
   ) {}
 
   ngOnInit(): void {
@@ -30,7 +32,6 @@ export class AccessRequestsComponent implements OnInit {
       .pipe(map((res) => res.data))
       .subscribe({
         next: (data) => {
-          // Mark new requests for animation
           const newRequests = data.map((request) => ({
             ...request,
             isNew: true,
@@ -38,7 +39,6 @@ export class AccessRequestsComponent implements OnInit {
 
           this.requests = [...newRequests];
 
-          // Remove isNew flag after animation
           setTimeout(() => {
             this.requests = this.requests.map((request) => ({
               ...request,
@@ -79,28 +79,37 @@ export class AccessRequestsComponent implements OnInit {
   }
 
   approveRequest(request: Request): void {
+    this.spinner.show();
     this.requestService
       .approveRequest(+request.user.id, request.workspace.id)
       .subscribe({
         next: (data) => {
+          this.spinner.hide();
           request.status = 'approved';
           this.toastr.success(data.message || 'Request approved successfully');
         },
         error: (err) => {
+          this.spinner.hide();
           console.error(err);
         },
       });
   }
 
   rejectRequest(request: Request): void {
+    this.spinner.show();
+
     this.requestService
       .rejectRequest(request.user.id, request.workspace.id)
       .subscribe({
         next: (data) => {
+          this.spinner.hide();
+
           request.status = 'rejected';
           this.toastr.success(data.message || 'Request rejected successfully');
         },
         error: (err) => {
+          this.spinner.hide();
+
           console.error(err);
         },
       });

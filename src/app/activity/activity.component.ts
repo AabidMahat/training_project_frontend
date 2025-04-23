@@ -32,13 +32,6 @@ export class ActivityComponent implements OnInit {
     this.loadActivities();
     this.applyFilters();
     this.applyActionFilter();
-    // Set default date range (last 30 days)
-    const today = new Date();
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(today.getDate() - 30);
-
-    this.endDate = this.formatDate(today);
-    this.startDate = this.formatDate(thirtyDaysAgo);
   }
 
   loadActivities(): void {
@@ -113,22 +106,7 @@ export class ActivityComponent implements OnInit {
     this.searchTerm = '';
     this.actionFilter = 'all';
 
-    const today = new Date();
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(today.getDate() - 30);
-
-    this.endDate = this.formatDate(today);
-    this.startDate = this.formatDate(thirtyDaysAgo);
-
     this.applyFilters();
-  }
-
-  // Format date for input[type="date"]
-  formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
   }
 
   // Helper to get class based on action type

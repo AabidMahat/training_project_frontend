@@ -16,6 +16,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ToastrModule } from 'ngx-toastr';
 
+import { NgxSpinnerModule } from 'ngx-spinner';
+
 import { AuthInterceptor } from './interceptor/auth.interceptor';
 
 import { RouterModule } from '@angular/router';
@@ -24,16 +26,16 @@ import { WorkspaceModule } from './dashboard/workspace.module';
 import { RequestModule } from './requests/request.module';
 import { ActivityModule } from './activity/activity.module';
 import { HomeComponent } from './home/home.component';
-import { TimeAgoPipe } from './home/time.pipe';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { DocumentModule } from './documents/document.module';
 import { ChartsComponent } from './pages/charts/charts.component';
 import { HighchartsChartModule } from 'highcharts-angular';
+import { UserModule } from './users/user.module';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, TimeAgoPipe, ChartsComponent],
+  declarations: [AppComponent, HomeComponent, ChartsComponent],
   imports: [
     BrowserAnimationsModule,
     RouterModule,
@@ -45,6 +47,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     RequestModule,
     ActivityModule,
     DocumentModule,
+    UserModule,
 
     HighchartsChartModule,
 
@@ -69,6 +72,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     }),
     FormsModule,
     QuillModule.forRoot(),
+
+    NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' }),
 
     SocketIoModule.forRoot(config),
   ],

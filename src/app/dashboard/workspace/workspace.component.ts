@@ -1,12 +1,20 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { WorkspaceService } from '../workspace.service';
-import { catchError, debounceTime, fromEvent, map, throwError } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  fromEvent,
+  map,
+  shareReplay,
+  throwError,
+} from 'rxjs';
 import { Workspace } from '../workspace.modal';
 import { Document } from '../../documents/document.service';
 import { Toastr } from '../../shared/toastr.shared';
 import { AuthService } from '../../auth/auth.service';
 import { CookieService } from 'ngx-cookie-service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-workspace',
@@ -21,7 +29,8 @@ export class WorkspaceComponent implements OnInit {
     private workspaceService: WorkspaceService,
     private toastr: Toastr,
     private authService: AuthService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private spinner: NgxSpinnerService
   ) {}
 
   filterWorkspaces: Workspace[] = [];
@@ -29,6 +38,8 @@ export class WorkspaceComponent implements OnInit {
   documents: Document[] = [];
 
   workspaces: Workspace[] = [];
+
+  currentDate: Date = new Date();
 
   @ViewChild('searchQuery', { static: true }) searchQuery!: ElementRef;
   colorPalette: string[] = [
@@ -47,19 +58,26 @@ export class WorkspaceComponent implements OnInit {
   }
 
   loadWorkspaces(): void {
+    this.spinner.show();
     this.workspaceService
       .getAllWorkspace()
       .pipe(
         map((res) => res.data),
+        shareReplay(1),
         catchError((err) => throwError(() => err))
       )
       .subscribe({
         next: (data) => {
+          console.log(data);
           this.workspaces = data.filter((item) => !item.isPrivate);
           this.filterWorkspaces = this.workspaces;
+          this.spinner.hide();
           console.log('Workspaces loaded:', this.workspaces);
         },
-        error: (err) => console.error('Error loading workspaces:', err),
+        error: (err) => {
+          this.spinner.hide();
+          console.error('Error loading workspaces:', err);
+        },
       });
   }
 

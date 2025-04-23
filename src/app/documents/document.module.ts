@@ -1,3 +1,4 @@
+import { WorkspaceModule } from './../dashboard/workspace.module';
 import { NgModule } from '@angular/core';
 import { AddDocumentComponent } from './add-document/add-document.component';
 import { ShowDocumentComponent } from './show-documents/show-documents.component';
@@ -15,6 +16,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     ReactiveFormsModule,
     FormsModule,
     NgxExtendedPdfViewerModule,
+    WorkspaceModule,
   ],
 })
 export class DocumentModule {}

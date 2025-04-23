@@ -14,6 +14,7 @@ import { VerifyOtpComponent } from './verify-otp/verify-otp.component';
 import { ResendOtpComponent } from './resend-otp/resend-otp.component';
 import { AuthRoutingModule } from './auth.routing';
 import { AppModule } from '../app.module';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,10 @@ import { AppModule } from '../app.module';
     BrowserModule,
     NgOtpInputModule,
     AuthRoutingModule,
+
+    NgxSpinnerModule.forRoot({
+      type: 'square-jelly-box',
+    }),
   ],
   exports: [
     LoginComponent,

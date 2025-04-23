@@ -9,6 +9,8 @@ export interface WorkspaceData {
   workspaceUser: any[];
   name: string;
   isPrivate: boolean;
+
+  createdAt: Date;
 }
 
 export interface JoinData {

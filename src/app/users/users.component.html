@@ -1,0 +1,109 @@
+<div class="users-container">
+  <div class="header">
+    <h1>User Management</h1>
+    <div class="filters">
+      <div class="search-container">
+        <span class="material-icons">search</span>
+        <input
+          type="text"
+          placeholder="Search by name or email"
+          class="search-input"
+          #searchQuery
+        />
+      </div>
+
+      <div class="status-filter">
+        <span class="filter-label">Status:</span>
+        <div class="filter-options">
+          <div
+            class="filter-option"
+            [class.selected]="statusFilter === 'all'"
+            (click)="filterByStatus('all')"
+          >
+            All
+          </div>
+          <div
+            class="filter-option"
+            [class.selected]="statusFilter === 'active'"
+            (click)="filterByStatus('active')"
+          >
+            Active
+          </div>
+          <div
+            class="filter-option"
+            [class.selected]="statusFilter === 'inactive'"
+            (click)="filterByStatus('inactive')"
+          >
+            Inactive
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading && filteredUsers.length === 0" class="empty-state">
+    <div class="empty-icon">
+      <span class="material-icons">person_search</span>
+    </div>
+    <p>
+      No users found matching your criteria. Try adjusting your search or filter
+      settings to see more users.
+    </p>
+  </div>
+
+  <div class="users-content" *ngIf="filteredUsers.length > 0">
+    <div class="table-header">
+      <div class="column avatar-col"></div>
+      <div class="column name-col">Full Name</div>
+      <div class="column email-col">Email Address</div>
+      <div class="column date-col sortable">
+        <span>Joined</span>
+        <span class="material-icons sort-icon">{{
+          dateSortDirection === "asc" ? "arrow_upward" : "arrow_downward"
+        }}</span>
+      </div>
+      <div class="column status-col">Status</div>
+      <div class="column action-col">Actions</div>
+    </div>
+
+    <div class="users-list">
+      <div class="user-row" *ngFor="let user of filteredUsers">
+        <div class="column avatar-col">
+          <div class="avatar" [ngClass]="{ inactive: !user.isActive }">
+            {{ getInitials(user.name) }}
+          </div>
+        </div>
+        <div class="column name-col">{{ user.name || "Unknown User" }}</div>
+        <div class="column email-col">{{ user.email || "No Email" }}</div>
+        <div class="column date-col">{{ user.createdAt | date }}</div>
+        <div class="column status-col">
+          <span
+            class="status-badge"
+            [ngClass]="{ active: user.isActive, inactive: !user.isActive }"
+          >
+            {{ user.isActive ? "Active" : "Inactive" }}
+          </span>
+        </div>
+        <div class="column action-col">
+          <button
+            class="toggle-btn"
+            [ngClass]="{
+              'activate-btn': !user.isActive,
+              'deactivate-btn': user.isActive
+            }"
+            (click)="toggleUserStatus(user)"
+          >
+            <span class="material-icons">{{
+              user.isActive ? "block" : "check_circle"
+            }}</span>
+            {{ user.isActive ? "Deactivate" : "Activate" }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

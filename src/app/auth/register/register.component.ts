@@ -10,6 +10,7 @@ import { catchError, map, throwError } from 'rxjs';
 import { User } from '../auth.modal';
 import { Toastr } from '../../shared/toastr.shared';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 function passwordMatch(
   controls: AbstractControl
@@ -29,7 +30,8 @@ export class RegisterComponent {
   constructor(
     private authService: AuthService,
     private toastr: Toastr,
-    private router: Router
+    private router: Router,
+    private spinner: NgxSpinnerService
   ) {}
 
   registrationForm = new FormGroup(
@@ -52,6 +54,7 @@ export class RegisterComponent {
   );
 
   onSubmit() {
+    this.spinner.show();
     if (this.registrationForm.valid) {
       this.authService
         .registerUser(this.registrationForm.value as Partial<User>)
@@ -64,6 +67,7 @@ export class RegisterComponent {
         )
         .subscribe({
           next: (data) => {
+            this.spinner.hide();
             this.toastr.showToast('success', 'Registration Successful');
             this.router.navigate(['/verify-account']);
             console.log('Registration Successful:', data);

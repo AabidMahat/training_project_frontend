@@ -112,7 +112,7 @@
             <h4>{{ activity.title }}</h4>
             <p>{{ activity.description }}</p>
             <div class="activity-meta">
-              <span class="time">{{ activity.time | timeAgo }}</span>
+              <span class="time">{{ activity.time }}</span>
               <span class="user">{{ activity.user }}</span>
             </div>
           </div>
@@ -142,7 +142,7 @@
             <div class="workspace-meta">
               <div class="members"></div>
               <span class="last-updated"
-                >Updated {{ workspace.lastUpdated | timeAgo }}</span
+                >Updated {{ workspace.lastUpdated }}</span
               >
             </div>
           </div>

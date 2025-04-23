@@ -35,9 +35,8 @@ export class ChartsComponent implements AfterViewInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-
-  loadActiveDocumentByWorkspace(){
-    const subscription =this.chartService
+  loadActiveDocumentByWorkspace() {
+    const subscription = this.chartService;
   }
 
   loadUserByWorkspace() {
@@ -297,7 +296,9 @@ export class ChartsComponent implements AfterViewInit, OnDestroy {
             Record<'admin' | 'viewer' | 'editor', number>
           > = {};
 
-          Object.keys(data).forEach((workspaceName) => {
+          Object.keys(data).forEach((workspaceKey) => {
+            const workspace = data[workspaceKey as any];
+            const workspaceName = workspace.workspaceName;
             roleCountsByWorkspace[workspaceName] = {
               admin: 0,
               viewer: 0,
@@ -305,7 +306,11 @@ export class ChartsComponent implements AfterViewInit, OnDestroy {
             };
 
             // Safe access to user array
-            const users = data[workspaceName as any]?.user || [];
+            const users = data[workspaceKey as any]?.user || [];
+
+            console.log({
+              users,
+            });
 
             users.forEach((user: { role: 'admin' | 'viewer' | 'editor' }) => {
               const userRole = user.role;
@@ -331,7 +336,7 @@ export class ChartsComponent implements AfterViewInit, OnDestroy {
                 (workspace: string) =>
                   roleCountsByWorkspace[workspace]?.admin ?? 0
               ),
-              color: '#FF5733',
+              color: 'blue',
             },
             {
               type: 'bar',
@@ -340,7 +345,7 @@ export class ChartsComponent implements AfterViewInit, OnDestroy {
                 (workspace: string) =>
                   roleCountsByWorkspace[workspace]?.viewer ?? 0
               ),
-              color: '#33FF57',
+              color: 'green',
             },
             {
               type: 'bar',
@@ -349,7 +354,7 @@ export class ChartsComponent implements AfterViewInit, OnDestroy {
                 (workspace: string) =>
                   roleCountsByWorkspace[workspace]?.editor ?? 0
               ),
-              color: '#3357FF',
+              color: 'yellow',
             },
           ];
 
@@ -364,7 +369,6 @@ export class ChartsComponent implements AfterViewInit, OnDestroy {
             xAxis: {
               categories: categories,
               title: { text: 'Workspaces' },
-              crosshair: true,
             },
             yAxis: {
               title: { text: 'Number of Users' },
@@ -382,14 +386,18 @@ export class ChartsComponent implements AfterViewInit, OnDestroy {
               useHTML: true,
             },
             plotOptions: {
-              column: {
-                pointPadding: 0.2,
-                borderWidth: 0,
-                grouping: true,
+              bar: {
+                stacking: 'normal', // This enables stacking
                 dataLabels: {
                   enabled: true,
+                  format: '{point.y}', // Show the value in the bar segment
                 },
               },
+            },
+            legend: {
+              align: 'right',
+              verticalAlign: 'top',
+              layout: 'vertical',
             },
             series: series,
             credits: {

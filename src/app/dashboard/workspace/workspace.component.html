@@ -45,6 +45,12 @@
 
         <ng-container *ngIf="getUserRole() === 'admin'">
           <li class="nav-item admin-nav-item">
+            <a class="nav-link" [routerLink]="['/users']">
+              <i class="nav-icon document-icon"></i>
+              <span>See All Users</span>
+            </a>
+          </li>
+          <li class="nav-item admin-nav-item">
             <a class="nav-link" [routerLink]="['/show-request']">
               <i class="nav-icon document-icon"></i>
               <span>See All Request</span>
@@ -131,7 +137,7 @@
                   {{ workspace.workspaceUser!.length || 0 }} collaborators
                 </div>
               </div>
-              <span class="view-btn">Open</span>
+              <span class="view-btn">open</span>
             </div>
           </div>
         </div>
@@ -160,3 +166,12 @@
     </div>
   </div>
 </div>
+
+<ngx-spinner
+  bdColor="rgba(0, 0, 0, 0.8)"
+  size="medium"
+  color="#fff"
+  type="square-jelly-box"
+  [fullScreen]="true"
+  ><p style="color: white">Loading...</p></ngx-spinner
+>

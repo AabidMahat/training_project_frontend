@@ -1,16 +1,25 @@
 import { HttpErrorResponse } from '@angular/common/http';
 // dashboard.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { WorkspaceData, WorkspaceService } from '../workspace.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { DocumentService, Document } from '../../documents/document.service';
-import { catchError, map, throwError } from 'rxjs';
+import {
+  catchError,
+  exhaustMap,
+  forkJoin,
+  map,
+  Subject,
+  takeUntil,
+  throwError,
+} from 'rxjs';
 
 import { showConfirmation } from '../../shared/confirmation.shared';
 import { SocketService } from '../../socket/socket.service';
 import { Toastr } from '../../shared/toastr.shared';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 interface User {
   id: number;
@@ -24,7 +33,7 @@ interface User {
   templateUrl: './workspace-details.component.html',
   styleUrls: ['./workspace-details.component.scss'],
 })
-export class WorkspaceDetailComponent implements OnInit {
+export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   constructor(
     private workspaceService: WorkspaceService,
     private documentService: DocumentService,
@@ -32,7 +41,8 @@ export class WorkspaceDetailComponent implements OnInit {
     private activateRoute: ActivatedRoute,
     private cookieService: CookieService,
     private toastr: Toastr,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private spinner: NgxSpinnerService
   ) {}
   workspaceName: string = 'My Workspace';
   selectedDocument: Partial<Document> | null = null;
@@ -40,9 +50,13 @@ export class WorkspaceDetailComponent implements OnInit {
   activeUsers: User[] | undefined = [];
   documents: Partial<Document>[] | undefined = [];
 
+  currentDate: Date = new Date();
+
   workspaceId: string | null = '';
 
   readonlyMode = false;
+
+  private destroy$ = new Subject<void>();
 
   // @ViewChild('quillEditor') editor!: QuillEditorComponent;
 
@@ -58,11 +72,74 @@ export class WorkspaceDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // this.workspaceId = this.activateRoute.snapshot.paramMap.get('workspaceId');
+
+    // this.getUserByWorkspace(this.workspaceId!);
+
+    // this.getWorkspaceById(this.workspaceId!);
+
+    this.loadWorkspaceData();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+  loadWorkspaceData() {
+    this.spinner.show();
     this.workspaceId = this.activateRoute.snapshot.paramMap.get('workspaceId');
 
-    this.getUserByWorkspace(this.workspaceId!);
+    const workspaceUser$ = this.workspaceService
+      .getUserByWorkspace(this.workspaceId!)
+      .pipe(
+        map((res) => res.data),
+        map((data) =>
+          data.map((val) => ({
+            id: val.user.id,
+            name: val.user.name,
+            email: val.user.email,
+            role: val.role,
+          }))
+        )
+      );
 
-    this.getWorkspaceById(this.workspaceId!);
+    const workspace$ = this.workspaceService
+      .getWorkspaceById(this.workspaceId!)
+      .pipe(map((res) => res.data));
+
+    forkJoin({
+      workspaceUser: workspaceUser$,
+      workspace: workspace$,
+    })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ workspaceUser, workspace }) => {
+          this.activeUsers = workspaceUser;
+
+          // Workspace Data
+
+          this.workspaceData = workspace;
+          this.workspaceName = workspace.name;
+
+          this.documents = this.workspaceData?.document
+            .map((doc) => ({
+              id: doc.id,
+              title: doc.title,
+              content: doc.content,
+              createdAt: doc.createdAt,
+              updatedAt: doc.updatedAt,
+              isActive: doc.isActive,
+            }))
+            .filter((doc) => doc.isActive);
+
+          this.spinner.hide();
+        },
+        error: (err) => {
+          console.error('Failed to load workspace:', err);
+          this.spinner.hide();
+          // this.toastr.showToast('error', 'Failed to load workspace');
+        },
+      });
   }
 
   getWorkspaceById(workspaceId: string) {
@@ -70,7 +147,8 @@ export class WorkspaceDetailComponent implements OnInit {
       .getWorkspaceById(workspaceId!)
       .pipe(
         map((res) => res.data),
-        catchError((err) => throwError(() => err))
+        catchError((err) => throwError(() => err)),
+        takeUntil(this.destroy$)
       )
       .subscribe({
         next: (data) => {
@@ -90,6 +168,25 @@ export class WorkspaceDetailComponent implements OnInit {
         error: (err) => console.log(err),
       });
   }
+
+  // getUserByWorkspace(workspaceId: string) {
+  //   this.workspaceService
+  //     .getUserByWorkspace(workspaceId)
+  //     .pipe(map((res) => res.data))
+  //     .subscribe({
+  //       next: (data) => {
+  //         console.log('Data', data);
+
+  //         this.activeUsers = data.map((val) => ({
+  //           id: val.user.id,
+  //           name: val.user.name,
+  //           email: val.user.email,
+  //           role: val.role,
+  //         }));
+  //       },
+  //       error: (err) => console.log(err),
+  //     });
+  // }
 
   getRealtimeDocumentUpdate() {
     const token: any = jwtDecode(this.cookieService.get('jwt'));
@@ -112,15 +209,18 @@ export class WorkspaceDetailComponent implements OnInit {
       );
     }
 
-    this.socketService.getLiveTyping().subscribe({
-      next: (delta: any) => {
-        console.log('Live typing', delta);
-        // if (this.editor && !this.editor.hasFocus()) {
-        console.log('Focus on editor to update content');
-        this.editor.updateContents(delta); // Update without disrupting cursor
-        // }
-      },
-    });
+    this.socketService
+      .getLiveTyping()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (delta: any) => {
+          console.log('Live typing', delta);
+          // if (this.editor && !this.editor.hasFocus()) {
+          console.log('Focus on editor to update content');
+          this.editor.updateContents(delta); // Update without disrupting cursor
+          // }
+        },
+      });
   }
 
   isUserPresent(): boolean {
@@ -135,25 +235,6 @@ export class WorkspaceDetailComponent implements OnInit {
     const user = this.activeUsers?.find((user) => user.id === token.id)!;
     console.log({ user });
     return user;
-  }
-
-  getUserByWorkspace(workspaceId: string) {
-    this.workspaceService
-      .getUserByWorkspace(workspaceId)
-      .pipe(map((res) => res.data))
-      .subscribe({
-        next: (data) => {
-          console.log('Data', data);
-
-          this.activeUsers = data.map((val) => ({
-            id: val.user.id,
-            name: val.user.name,
-            email: val.user.email,
-            role: val.role,
-          }));
-        },
-        error: (err) => console.log(err),
-      });
   }
 
   getUserRole() {
@@ -191,7 +272,8 @@ export class WorkspaceDetailComponent implements OnInit {
         map((res) => res.data),
         catchError((err: HttpErrorResponse) =>
           throwError(() => new Error(err.error))
-        )
+        ),
+        takeUntil(this.destroy$)
       )
       .subscribe({
         next: (data) => {
@@ -211,6 +293,7 @@ export class WorkspaceDetailComponent implements OnInit {
 
     this.documentService
       .updateDocument(this.selectedDocument?.id!, plainText)
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.socketService.saveDocument(
@@ -228,17 +311,20 @@ export class WorkspaceDetailComponent implements OnInit {
   removeWorkspace() {
     const workspaceId = this.activateRoute.snapshot.paramMap.get('workspaceId');
 
-    this.workspaceService.removeWorkspace(workspaceId!).subscribe({
-      next: () => {
-        this.toastr.showToast('success', 'Workspace Removed');
-        this.router.navigate(['/workspace']);
-      },
+    this.workspaceService
+      .removeWorkspace(workspaceId!)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.toastr.showToast('success', 'Workspace Removed');
+          this.router.navigate(['/workspace']);
+        },
 
-      error: (err) => {
-        // this.toastr.showToast('error', err);
-        console.log(err);
-      },
-    });
+        error: (err) => {
+          // this.toastr.showToast('error', err);
+          console.log(err);
+        },
+      });
   }
 
   showWorkspaceRemoveWindow() {
@@ -267,26 +353,32 @@ export class WorkspaceDetailComponent implements OnInit {
     const workspaceId = this.activateRoute.snapshot.paramMap.get('workspaceId');
     console.log('Clicked');
 
-    this.workspaceService.removeUser(workspaceId!, userId).subscribe({
-      next: () => {
-        this.toastr.showToast('success', 'User Removed');
-        this.router.navigate(['/workspace']);
-      },
+    this.workspaceService
+      .removeUser(workspaceId!, userId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.toastr.showToast('success', 'User Removed');
+          this.router.navigate(['/workspace']);
+        },
 
-      error: (err) => {
-        this.toastr.showToast('error', err);
-      },
-    });
+        error: (err) => {
+          this.toastr.showToast('error', err);
+        },
+      });
   }
 
   deleteDocument(documentId: number) {
     const token: any = jwtDecode(this.cookieService.get('jwt'));
-    this.documentService.deleteDocument(documentId, token.id).subscribe({
-      next: (data) => {
-        this.toastr.showToast('success', 'Document Deleted Successfully');
-        this.getWorkspaceById(this.workspaceId!);
-      },
-    });
+    this.documentService
+      .deleteDocument(documentId, token.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.toastr.showToast('success', 'Document Deleted Successfully');
+          this.getWorkspaceById(this.workspaceId!);
+        },
+      });
   }
 
   updateWorkspace() {
