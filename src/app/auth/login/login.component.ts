@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { ForgetPasswordComponent } from '../forget-password/forget-password.component';
 import { ResendOtpComponent } from '../resend-otp/resend-otp.component';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { SpinnerService } from '../../shared/loader.shared';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,7 @@ export class LoginComponent {
     private toastr: Toastr,
     private cookieService: CookieService,
     private router: Router,
-    private spinner: NgxSpinnerService
+    private spinner: SpinnerService
   ) {}
 
   @ViewChild('forgetPassword', { read: ViewContainerRef, static: true })
@@ -43,7 +44,7 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      this.spinner.show();
+      this.spinner.showSpinner();
       this.authService
         .loginUser(this.loginForm.value as Partial<User>)
         .pipe(
@@ -57,7 +58,7 @@ export class LoginComponent {
             this.cookieService.set('jwt', data.token);
             this.cookieService.set('role', data.data.role);
 
-            this.spinner.hide();
+            this.spinner.closeSpinner();
             this.toastr.showToast('success', 'Login Successful');
             this.router.navigate(['/workspace']);
 

@@ -15,6 +15,7 @@ import { ResendOtpComponent } from './resend-otp/resend-otp.component';
 import { AuthRoutingModule } from './auth.routing';
 import { AppModule } from '../app.module';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { SpinnerComponent } from '../shared/spinner/spinner.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     VerifyOtpComponent,
     ResendOtpComponent,
     GenericCardComponent,
+    SpinnerComponent,
   ],
   imports: [
     CommonModule,
@@ -44,6 +46,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     RegisterComponent,
     ForgetPasswordComponent,
     GenericCardComponent,
+    SpinnerComponent,
   ],
 })
 export class AuthModule {}

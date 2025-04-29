@@ -51,6 +51,12 @@
             </a>
           </li>
           <li class="nav-item admin-nav-item">
+            <a class="nav-link" [routerLink]="['/all-documents']">
+              <i class="nav-icon document-icon"></i>
+              <span>See All Documents</span>
+            </a>
+          </li>
+          <li class="nav-item admin-nav-item">
             <a class="nav-link" [routerLink]="['/show-request']">
               <i class="nav-icon document-icon"></i>
               <span>See All Request</span>
@@ -102,7 +108,7 @@
 
       <div>
         <div class="workspace-grid" *ngIf="filterWorkspaces.length > 0">
-          <div
+          <!-- <div
             class="workspace-card"
             *ngFor="let workspace of filterWorkspaces"
             (click)="openWorkspace(workspace.id)"
@@ -126,7 +132,7 @@
                 </span>
                 <span class="document-count">
                   <i class="document-icon"></i>
-                  <!-- {{ workspace.document.length || 0 }} docs -->
+                  <!-- {{ workspace.document.length || 0 }} docs 
                   {{ getWorkspaceDocumentLength(workspace.id) || 0 }} docs
                 </span>
               </div>
@@ -139,7 +145,11 @@
               </div>
               <span class="view-btn">open</span>
             </div>
-          </div>
+          </div> -->
+          <app-workspace-item
+            [filterWorkspaces]="filterWorkspaces"
+            [workspaces]="workspaces"
+          ></app-workspace-item>
         </div>
 
         <div class="empty-state" *ngIf="filterWorkspaces.length === 0">

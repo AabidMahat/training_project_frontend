@@ -1,311 +1,287 @@
-/* Document Manager Component Styles */
-
 // Variables
-$primary-color: #3f51b5;
-$secondary-color: #f5f5f5;
-$accent-color: #ff4081;
-$text-color: #333333;
-$light-text: #666666;
+$primary-color: #4361ee;
+$primary-light: #4895ef;
+$primary-dark: #3f37c9;
+$accent-color: #f72585;
+$text-color: #333;
+$text-light: #666;
+$bg-color: #f8f9fa;
+$card-bg: #fff;
 $border-color: #e0e0e0;
-$hover-color: #eef1ff;
-$card-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-$transition-speed: 0.2s;
+$shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+$border-radius: 8px;
+$transition: all 0.3s ease;
 
-// Mixins
-@mixin flex-center {
-  display: flex;
-  align-items: center;
-}
-
-@mixin button-reset {
-  border: none;
-  background: none;
-  cursor: pointer;
-  padding: 0;
-  font: inherit;
-}
-
-// Main Container
+// General Styles
 .document-dashboard {
-  font-family: "Roboto", "Segoe UI", Arial, sans-serif;
+  font-family: "Inter", "Segoe UI", Roboto, -apple-system, sans-serif;
   color: $text-color;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px;
+  background-color: $bg-color;
+  padding: 1.5rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-// Header Section
+// Dashboard Header
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid $border-color;
+  margin-bottom: 1rem;
 
   h1 {
-    font-size: 24px;
-    font-weight: 500;
+    font-size: 1.75rem;
+    font-weight: 600;
     margin: 0;
-    color: $primary-color;
-  }
-}
-
-// Search Container
-.search-container {
-  @include flex-center;
-  position: relative;
-  width: 320px;
-
-  .search-input {
-    width: 100%;
-    padding: 10px 16px;
-    padding-right: 40px;
-    border: 1px solid $border-color;
-    border-radius: 24px;
-    font-size: 14px;
-    transition: all $transition-speed ease;
-
-    &:focus {
-      outline: none;
-      border-color: $primary-color;
-      box-shadow: 0 0 0 2px rgba($primary-color, 0.1);
-    }
-
-    &::placeholder {
-      color: $light-text;
-    }
+    color: $primary-dark;
   }
 
-  .search-button {
-    @include button-reset;
-    position: absolute;
-    right: 12px;
-    color: $light-text;
-    font-size: 14px;
-    transition: color $transition-speed ease;
+  .search-container {
+    display: flex;
+    width: 350px;
+    position: relative;
 
-    &:hover {
-      color: $primary-color;
+    .search-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid $border-color;
+      border-radius: $border-radius;
+      font-size: 0.9rem;
+      transition: $transition;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+      &:focus {
+        outline: none;
+        border-color: $primary-light;
+        box-shadow: 0 0 0 3px rgba($primary-light, 0.15);
+      }
+    }
+
+    .search-button {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: $text-light;
+      cursor: pointer;
+
+      &:hover {
+        color: $primary-color;
+      }
     }
   }
 }
 
-// Content Layout
+// Dashboard Layout
 .dashboard-content {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
 
-  @media (min-width: 992px) {
-    grid-template-columns: 3fr 2fr;
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
   }
-}
-
-// Table Container
-.document-table-container {
-  overflow-x: auto;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: $card-shadow;
 }
 
 // Document Table
+.document-table-container {
+  background-color: $card-bg;
+  border-radius: $border-radius;
+  box-shadow: $shadow;
+  overflow: hidden;
+  height: calc(100vh - 160px);
+  min-height: 400px;
+}
+
 .document-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
 
-  th,
-  td {
-    padding: 12px 16px;
+  th {
+    background-color: #f4f6f8;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: $text-light;
+    padding: 1rem;
     text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 10;
     border-bottom: 1px solid $border-color;
   }
 
-  th {
-    font-weight: 500;
-    color: $light-text;
-    background-color: $secondary-color;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-  }
+  tbody {
+    overflow-y: auto;
 
-  tr {
-    transition: background-color $transition-speed ease;
-    cursor: pointer;
+    tr {
+      border-bottom: 1px solid $border-color;
+      transition: $transition;
+      cursor: pointer;
 
-    &:hover {
-      background-color: $hover-color;
+      &:hover {
+        background-color: rgba($primary-light, 0.05);
+      }
+
+      &.selected {
+        background-color: rgba($primary-light, 0.1);
+        border-left: 3px solid $primary-color;
+      }
     }
 
-    &.selected {
-      background-color: rgba($primary-color, 0.1);
+    td {
+      padding: 1rem;
+      font-size: 0.9rem;
+
+      &.id-column {
+        font-family: monospace;
+        color: $text-light;
+        font-size: 0.85rem;
+      }
+
+      &.title-column {
+        font-weight: 500;
+      }
+
+      &.content-column {
+        color: $text-light;
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      &.date-column {
+        color: $text-light;
+        font-size: 0.85rem;
+      }
     }
-  }
-
-  .id-column {
-    width: 60px;
-    color: $light-text;
-    font-size: 12px;
-  }
-
-  .title-column {
-    font-weight: 500;
-  }
-
-  .content-column {
-    color: $light-text;
-    max-width: 250px;
-  }
-
-  .date-column {
-    width: 120px;
-    white-space: nowrap;
-    color: $light-text;
-    font-size: 12px;
-  }
-
-  .actions-column {
-    width: 80px;
-    text-align: center;
   }
 }
 
-// Buttons
+// Action Buttons
 .action-button {
-  @include button-reset;
-  padding: 6px 12px;
+  border: none;
   border-radius: 4px;
-  font-size: 12px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8rem;
   font-weight: 500;
-  transition: all $transition-speed ease;
+  cursor: pointer;
+  transition: $transition;
 
   &.primary {
     background-color: $primary-color;
     color: white;
 
     &:hover {
-      background-color: darken($primary-color, 10%);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      background-color: $primary-dark;
     }
   }
 }
 
-// Document Detail Container
+// Document Detail Section
 .document-detail-container {
-  height: 100%;
-}
-
-// Detail Card
-.detail-card {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: $card-shadow;
-  height: 100%;
+  background-color: $card-bg;
+  border-radius: $border-radius;
+  box-shadow: $shadow;
+  height: calc(100vh - 160px);
+  min-height: 400px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-// Detail Header
+.detail-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+}
+
 .detail-header {
-  padding: 20px;
+  padding: 1.5rem;
   border-bottom: 1px solid $border-color;
 
   .detail-meta {
     display: flex;
-    gap: 16px;
-    font-size: 12px;
-    color: $light-text;
-    margin-bottom: 8px;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+
+    span {
+      font-size: 0.8rem;
+      color: $text-light;
+    }
   }
 
   .detail-title {
+    font-size: 1.5rem;
+    font-weight: 600;
     margin: 0;
-    font-size: 18px;
-    font-weight: 500;
-    color: $primary-color;
+    color: $primary-dark;
   }
 }
 
-// Detail Content
 .detail-content {
-  padding: 20px;
-  flex-grow: 1;
+  flex: 1;
+  padding: 1.5rem;
   overflow-y: auto;
 
   h3 {
-    margin-top: 0;
-    margin-bottom: 16px;
-    font-size: 16px;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    color: $text-color;
   }
 
   .content-box {
-    padding: 16px;
-    background-color: $secondary-color;
-    border-radius: 4px;
+    background-color: #f8f9fa;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    padding: 1.5rem;
     min-height: 200px;
-    max-height: 600px;
-    overflow-y: auto;
-  }
-
-  .no-content {
-    color: $light-text;
-    font-style: italic;
   }
 }
 
-// PDF Viewer Container
-ngx-extended-pdf-viewer {
-  height: 500px;
-  width: 100%;
-  margin-top: 16px;
-  border: 1px solid $border-color;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-// No Document Selected Template
-.document-detail-container:empty {
-  & + ng-template {
-    display: block;
-  }
-}
-
-/* Style for the no document selected state */
+// No Content State
 .no-content {
   display: flex;
-  height: 100%;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: $card-shadow;
   justify-content: center;
   align-items: center;
+  height: 100%;
+  color: $text-light;
+  font-size: 1rem;
+  text-align: center;
+  background-color: #f9fafb;
 
   p {
-    font-size: 16px;
-    color: $light-text;
-    text-align: center;
-    padding: 40px;
     margin: 0;
-    font-weight: 500;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    &::before {
-      content: "";
-      display: block;
-      width: 60px;
-      height: 60px;
-      margin-bottom: 16px;
-      background-color: $secondary-color;
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6z'/%3E%3C/svg%3E");
-      mask-size: contain;
-      mask-repeat: no-repeat;
-      mask-position: center;
-    }
+    padding: 2rem;
   }
+}
+
+// Status Indicator
+td:last-child {
+  &:contains("Active") {
+    color: #10b981;
+    font-weight: 500;
+  }
+
+  &:contains("Inactive") {
+    color: #9ca3af;
+  }
+}
+
+// PDF Viewer
+ngx-extended-pdf-viewer {
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  border-radius: $border-radius;
+  overflow: hidden;
+  margin-top: 1rem;
 }

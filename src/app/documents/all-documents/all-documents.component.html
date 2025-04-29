@@ -1,0 +1,124 @@
+<div class="documents-container">
+  <header class="header">
+    <h1>Document Management</h1>
+    <div class="actions">
+      <div class="search-container">
+        <input
+          type="text"
+          placeholder="Search documents..."
+          [(ngModel)]="searchTerm"
+          (input)="filterDocuments()"
+        />
+        <i class="fa fa-search search-icon"></i>
+      </div>
+    </div>
+  </header>
+
+  <div class="stats-cards">
+    <div class="stat-card">
+      <div class="stat-value">{{ getActiveCount() }}</div>
+      <div class="stat-label">Active</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">{{ getInactiveCount() }}</div>
+      <div class="stat-label">Inactive</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">{{ documents.length }}</div>
+      <div class="stat-label">Total</div>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="documents-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Created At</th>
+          <th>User</th>
+          <th>Workspace</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let doc of filteredDocuments"
+          [ngClass]="{ 'inactive-row': !doc.isActive }"
+        >
+          <td class="id-cell">
+            <div class="id-badge">{{ doc.id }}</div>
+          </td>
+          <td>
+            <div class="document-title">
+              <i class="fa fa-file-text-o doc-icon"></i>
+              <span>{{ doc.title || "Untitled Document" }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="date-info">
+              <span class="date">{{ doc.createdAt | date : "MMM d, y" }}</span>
+              <span class="time">{{ doc.createdAt | date : "h:mm a" }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="user-info" *ngIf="doc.user">
+              <div
+                class="user-avatar"
+                [ngStyle]="{ 'background-color': '#f72585' }"
+              >
+                {{ getUserInitials(doc.user?.name) }}
+              </div>
+              <span>{{ doc.user?.name || "Unknown" }}</span>
+            </div>
+            <span *ngIf="!doc.user">Unknown</span>
+          </td>
+          <td>
+            <div class="workspace-badge" *ngIf="doc.workspace">
+              {{ doc.workspace?.name || "Unknown" }}
+            </div>
+            <span *ngIf="!doc.workspace">Unknown</span>
+          </td>
+          <td>
+            <span
+              class="status-badge"
+              [ngClass]="doc.isActive ? 'active' : 'inactive'"
+            >
+              {{ doc.isActive ? "Active" : "Inactive" }}
+            </span>
+          </td>
+          <td>
+            <div class="actions-cell">
+              <button
+                *ngIf="!doc.isActive"
+                class="activate-btn"
+                (click)="activateDocument(doc.id)"
+              >
+                <i class="fa fa-check-circle"></i> Activate
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="filteredDocuments.length === 0">
+          <td colspan="7" class="no-data">
+            <div class="empty-state">
+              <i class="fa fa-file-o empty-icon"></i>
+              <p>No documents found</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination" *ngIf="filteredDocuments.length > 0">
+    <button class="page-btn" [disabled]="currentPage === 1">
+      <i class="fa fa-chevron-left"></i>
+    </button>
+    <div class="page-info">Page {{ currentPage }} of {{ totalPages }}</div>
+    <button class="page-btn" [disabled]="currentPage === totalPages">
+      <i class="fa fa-chevron-right"></i>
+    </button>
+  </div>
+</div>

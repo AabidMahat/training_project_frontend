@@ -11,6 +11,9 @@ export interface Document {
   document: File | null;
   createdAt: Date;
   updatedAt: Date;
+
+  user?: any;
+  workspace?: any;
 }
 
 @Injectable({
@@ -54,6 +57,20 @@ export class DocumentService {
   deleteDocument(documentId: number, userId: number) {
     return this.httpClient.delete(
       `${this.APIURL}/document/${documentId}/${userId}`
+    );
+  }
+
+  getDocuments() {
+    return this.httpClient.get<{
+      message: string;
+      data: Document[];
+    }>(`${this.APIURL}/document/all-documents`);
+  }
+
+  changeStatus(documentId: number, status: boolean) {
+    return this.httpClient.patch(
+      `${this.APIURL}/document/change-status/${documentId}`,
+      { status }
     );
   }
 }

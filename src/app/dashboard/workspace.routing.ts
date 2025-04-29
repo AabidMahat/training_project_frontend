@@ -24,7 +24,6 @@ const routes: Routes = [
   {
     path: 'create-workspace',
     canActivate: [AuthGuard],
-
     component: CreateWorkspaceComponent,
   },
   {

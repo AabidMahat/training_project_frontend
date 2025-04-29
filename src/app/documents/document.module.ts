@@ -6,8 +6,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentRoutingModule } from './document.routing';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { AllDocumentsComponent } from './all-documents/all-documents.component';
+import { AuthModule } from '../auth/auth.module';
 @NgModule({
-  declarations: [AddDocumentComponent, ShowDocumentComponent],
+  declarations: [
+    AddDocumentComponent,
+    ShowDocumentComponent,
+    AllDocumentsComponent,
+  ],
   exports: [AddDocumentComponent, ShowDocumentComponent],
   imports: [
     CommonModule,
@@ -17,6 +23,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     FormsModule,
     NgxExtendedPdfViewerModule,
     WorkspaceModule,
+    AuthModule,
   ],
 })
 export class DocumentModule {}

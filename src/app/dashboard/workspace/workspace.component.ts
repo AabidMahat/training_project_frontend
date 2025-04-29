@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { WorkspaceService } from '../workspace.service';
 import {
@@ -7,6 +13,8 @@ import {
   fromEvent,
   map,
   shareReplay,
+  Subject,
+  takeUntil,
   throwError,
 } from 'rxjs';
 import { Workspace } from '../workspace.modal';
@@ -21,8 +29,10 @@ import { NgxSpinnerService } from 'ngx-spinner';
   templateUrl: './workspace.component.html',
   styleUrls: ['./workspace.component.scss'],
 })
-export class WorkspaceComponent implements OnInit {
+export class WorkspaceComponent implements OnInit, OnDestroy {
   isSidebarOpen: boolean = false;
+
+  destroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
@@ -38,8 +48,6 @@ export class WorkspaceComponent implements OnInit {
   documents: Document[] = [];
 
   workspaces: Workspace[] = [];
-
-  currentDate: Date = new Date();
 
   @ViewChild('searchQuery', { static: true }) searchQuery!: ElementRef;
   colorPalette: string[] = [
@@ -57,6 +65,11 @@ export class WorkspaceComponent implements OnInit {
     this.loadWorkspaces();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   loadWorkspaces(): void {
     this.spinner.show();
     this.workspaceService
@@ -64,7 +77,8 @@ export class WorkspaceComponent implements OnInit {
       .pipe(
         map((res) => res.data),
         shareReplay(1),
-        catchError((err) => throwError(() => err))
+        catchError((err) => throwError(() => err)),
+        takeUntil(this.destroy$)
       )
       .subscribe({
         next: (data) => {
@@ -133,7 +147,10 @@ export class WorkspaceComponent implements OnInit {
   getOwnerWorkspace() {
     this.workspaceService
       .getOwnerWorkspace()
-      .pipe(map((res) => res.data))
+      .pipe(
+        map((res) => res.data),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: (data) => {
           console.log({

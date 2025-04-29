@@ -14,6 +14,7 @@ import { ButtonComponent } from '../shared/button/button.component';
 import { UpdateWorkspaceComponent } from './update-workspace/update-workspace.component';
 import { FormatTime } from './time-ago.pipe';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { WorkspaceItemComponent } from './workspace/workspace-item/workspace-item.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     UpdateWorkspaceComponent,
     ButtonComponent,
     FormatTime,
+    WorkspaceItemComponent,
   ],
   imports: [
     WorkspaceRoutingModule,
